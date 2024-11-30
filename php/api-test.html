@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3-Day Weather Forecast for Manila</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 80%;
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #5a8f5a;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #4e7b4e;
+    }
+
+    .forecast {
+      margin-top: 20px;
+    }
+
+    .forecast-day {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      margin: 5px 0;
+    }
+
+    .forecast-day h3 {
+      margin: 0;
+    }
+
+    .condition {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .precipitation {
+      color: #007BFF;
+    }
+
+    .temperature {
+      color: #ff5722;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather Forecast for Manila</h1>
+    <div id="forecast" class="forecast">
+      <!-- Forecast data will be displayed here -->
+    </div>
+  </div>
+
+  <script>
+    const apiKey = 'c4e5078a35ccd93a3c97fb20374fab27';
+    const lat = 14.5995; // Latitude for Manila
+    const lon = 120.9842; // Longitude for Manila
+    const apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=14.5995&lon=120.9842&exclude=hourly,minutely,alerts&appid=c4e5078a35ccd93a3c97fb20374fab27&units=metric
+`;
+
+    function getWeather() {
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          if (data.cod === 200 || data.status === 'ok') {
+            displayWeather(data);
+          } else {
+            alert('Error fetching weather data');
+          }
+        })
+        .catch(err => console.error('Error fetching weather data:', err));
+    }
+
+    function displayWeather(data) {
+      const forecastContainer = document.getElementById('forecast');
+      forecastContainer.innerHTML = ''; // Clear previous data
+
+      // Get the daily data (next 3 days)
+      const days = ['Today', 'Tomorrow', 'Day After Tomorrow'];
+      let dayIndex = 0;
+
+      // Loop through the first 3 days (after current day)
+      for (let i = 1; i <= 3; i++) {
+        const dayData = data.daily[i];
+        const day = days[dayIndex++];
+        const condition = dayData.weather[0].main;
+        const precipitation = dayData.pop * 100; // Precipitation Probability
+        const temperature = dayData.temp.day; // Day temperature
+
+        const forecastHTML = `
+          <div class="forecast-day">
+            <h3>${day}</h3>
+            <div class="condition">${condition}</div>
+            <div class="precipitation">Precipitation Probability: ${precipitation}%</div>
+            <div class="temperature">Temperature: ${temperature}°C</div>
+          </div>
+        `;
+        forecastContainer.innerHTML += forecastHTML;
+      }
+    }
+
+    // Call getWeather immediately when the page loads
+    window.onload = getWeather;
+  </script>
+</body>
+</html>

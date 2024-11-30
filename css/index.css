@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+body {
+    background-color: #1C2628;
+    margin: 0;
+
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Apply snap scrolling to the entire document */
+html, body {
+    height: 100%;
+    scroll-snap-type: y mandatory; /* Enable snap scrolling on the y-axis */
+    scroll-behavior: smooth; /* Smooth scrolling effect */
+
+}
+
+/* Make each section a snap point */
+#heroPage, #ftPage1, #ftPage2, #ftPage3 {
+    scroll-snap-align: start; /* Each section will snap to the top */
+}
+@keyframes myAnim {
+	0% {
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(1.1);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+}
+@keyframes FadeUp {
+	0% {
+		opacity: 0;
+		transform: translateY(50px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Layout */
+.info-page {
+    display: flex; /* Use Flexbox */
+    justify-content: flex-start; /* Align items to the left */
+    align-items: center; /* Center items vertically */
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+
+}
+
+
+.background-box {
+    position: fixed; /* Change from absolute to fixed */
+    width: 900px;
+    height: 900px;
+    animation: myAnim 5s ease-in-out 0s infinite normal forwards;
+    z-index: -1; /* Ensure the ellipses stay behind other elements */
+}
+
+.background-box .ellipse {
+    width: 900px;
+    height: 900px;
+    border-radius: 50%;
+    filter: blur(1000px);
+}
+
+.top-blur {
+    top: -600px;
+    left: -200px;
+}
+
+.top-blur .ellipse {
+    background-color: #3866419a;
+}
+
+.bottom-blur {
+    bottom: -600px;
+    right: -600px;
+}
+
+.bottom-blur .ellipse {
+    background-color: rgba(241, 179, 73, 0.55);
+}
+/* Content */
+
+.content-wrapper {
+    max-width: 1000px; /* Limit width for a clean layout */
+    color: #FEFADF;
+    text-align: left; /* Align text to the left */
+    padding-left: 100px; /* Add some padding to create space from the edge */
+}
+
+
+.welcome-text {
+    color: #F1B04C;
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0;
+    position: relative;
+    animation: FadeUp 1s ease-in-out 0s 1 normal forwards;
+}
+
+.title {
+    font-size: 150px;
+    font-weight: 800;
+    margin: 0;
+    position: relative;
+    animation: FadeUp 1s ease-in-out 0s 1 normal forwards;
+}
+
+.description {
+    font-size: 14px;
+    font-weight: 400;
+    color: #FFFFF8;
+    text-align: justify;
+    margin-top: 16px;
+    position: relative;
+    animation: FadeUp 1s ease-in-out 0s 1 normal forwards;
+}
+
+.icon-up-diag{
+    width: 18px;
+    height: 18px;
+    fill: #1C2628;
+    margin-left: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+
+.btn-try {
+    background-color: #F1B04C;
+    color: #1C2628; /* Adjust text color if needed */
+    margin-top: 32px;
+    animation: FadeUp 1s ease-in-out 0s 1 normal forwards;
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-try:hover {
+    background-color: #df8909;
+    color: #FEFADF; /* Adjust text color if needed */
+}
+
+.btn-try:hover .icon-up-diag {
+    fill: #FEFADF; /* Adjust text color if needed */
+}
+
+
+.btn-more {
+    margin-left: 20px;
+    background-color: transparent;
+    color: #FEFADF; /* Adjust text color if needed */
+    margin-top: 32px;
+    animation: FadeUp 1s ease-in-out 0s 1 normal forwards;
+    padding: 10px 16px;
+    font-size: 16px;
+    transition: text-decoration 0.3s ease-in-out;
+}
+
+.btn-more:hover {
+    text-decoration: underline;
+    color: #FEFADF; /* Adjust text color if needed */
+}
+
+
+/* Key Features */
+
+.key-features {
+    height: 100vh; /* Full viewport height */
+    background-color: #13171f36; /* Dark background */
+    color: #FEFADF; /* Light text color */
+    display: flex;
+    justify-content: space-between; /* Space between content and image */
+    align-items: center;
+    gap: 30px; /* Space between content and image */
+}
+
+/* Key Features Content */
+.key-features .content-wrapper.features {
+    padding-right: 100px;
+    text-align: left; /* Align text content to the left */
+    max-width: 100%; /* Limit the width of the content */
+    color: #FEFADF; /* Ensure text remains visible */
+
+}
+
+.key-features .title {
+    font-size: 80px; /* Adjust the title size */
+    font-weight: 800;
+    margin: 0;
+    position: relative;
+    text-align: right; /* Align the title to the right */
+
+}
+
+
+.key-features .description {
+    font-size: 16px; /* Adjust description font size */
+    font-weight: 400;
+    color: #FFFFF8;
+    text-align: justify;
+    margin-top: 16px;
+    position: relative;
+  
+}
+
+/* Image Placeholder */
+.image-container {
+    flex: 1; /* Allow the image container to take up space */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 100px; /* Add margin for spacing */
+}
+
+.image-placeholder {
+    width: 400px; /* Adjust width as needed */
+    height: 500px; /* Adjust height as needed */
+    background-color: #F1B04C; /* Add a rectangle with placeholder color */
+    border-radius: 10px; /* Optional: Add rounded corners */
+    overflow: hidden;
+    box-shadow: 0 10px 16px rgba(0, 0, 0, 0.24); /* Add shadow for depth */
+}
+
+.image-placeholder img {
+    width: 100%; /* Ensure the image takes up the entire space */
+    height: 100%; /* Ensure the image takes up the entire space */
+    object-fit: cover; /* Maintain aspect ratio */
+    position: relative;
+}
+
+span{
+    color: #F1B04C;
+}
+
+.key-features.flood{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+.key-features.flood .image-container{
+    padding-right: 100px;
+}
+
+.key-features.flood .title{
+    text-align: left;
+}
+.key-features.anytime {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers horizontally */
+    justify-content: center; /* Centers vertically */
+    text-align: center; /* Centers the text */
+    height: 100vh; /* Full viewport height, optional */
+    padding: 20px; /* Optional for spacing */
+}
+
+.key-features.anytime .title {
+    text-align: center;
+}
+
+.key-features.anytime .description {
+    text-align: center;
+    max-width: 70%; /* Optional: Limits text width for readability */
+    margin: 0 auto; /* Centers the paragraph */
+    margin-top: 20px;
+}
+
+.content-wrapper.features.anytime {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers all content horizontally */
+    justify-content: center; /* Centers all content vertically */
+}
+

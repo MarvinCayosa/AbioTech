@@ -1,0 +1,19 @@
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 20px; /* Scrollbar width */
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent; /* Fully transparent track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #7a7a7a8a; /* Visible thumb */
+  border-radius: 20px; /* Rounded corners for the thumb */
+  border: 6px solid transparent; /* Transparent border for spacing */
+  background-clip: padding-box; /* Ensures the thumb is clipped properly */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #5c5c5cce; /* Darker color on hover for the thumb */
+}

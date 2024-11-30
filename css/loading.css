@@ -1,0 +1,87 @@
+:root {
+    --border-width: 5px;
+}
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1C2628;
+    overflow: hidden;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Section loading container */
+.sec-loading {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #FEFADF;
+}
+
+/* Animated spinner */
+.sec-loading .one {
+    height: 60px; /* Reduced size */
+    width: 60px; /* Reduced size */
+    border: var(--border-width) solid  #FEFADF;
+    transform: rotate(45deg);
+    border-radius: 0 50% 50% 50%;
+    position: relative;
+    animation: move 0.5s linear infinite alternate-reverse;
+}
+.sec-loading .one::before {
+    content: "";
+    position: absolute;
+    height: 55%;
+    width: 55%;
+    border-radius: 50%;
+    border: var(--border-width) solid transparent;
+    border-top-color: #FEFADF;
+    border-bottom-color: #FEFADF;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: rotate 1s linear infinite;
+}
+
+/* Loading text animation */
+.loading-text {
+    margin-top: 50px;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: #FEFADF;
+    animation: blink 1.5s linear infinite;
+}
+
+@keyframes rotate {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+@keyframes move {
+    to {
+        transform: translateY(10px) rotate(45deg);
+    }
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}

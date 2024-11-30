@@ -1,0 +1,507 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+body {
+    background-color: #1C2628;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden; /* Prevent unintended scrolling */
+}
+
+@keyframes fadeinleft {
+	0% {
+		opacity: 0;
+		transform: translateX(-50px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@keyframes fadeinbt {
+	0% {
+		opacity: 0;
+		transform: translateY(50px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@keyframes fadeinrt {
+	0% {
+		opacity: 0;
+		transform: translateX(50px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+.background-box {
+    position: fixed; /* Change from absolute to fixed */
+    width: 900px;
+    height: 900px;
+    animation: myAnim 5s ease-in-out 0s infinite normal forwards;
+    z-index: -1; /* Ensure the ellipses stay behind other elements */
+}
+
+.background-box .ellipse {
+    width: 900px;
+    height: 900px;
+    border-radius: 50%;
+    filter: blur(1000px);
+}
+
+.top-blur {
+    top: -600px;
+    right: -200px;
+}
+
+.top-blur .ellipse {
+    background-color: #106421a8;
+}
+
+.bottom-blur {
+    bottom: -600px;
+    left: -600px;
+}
+
+.bottom-blur .ellipse {
+    background-color: rgba(181, 255, 8, 0.267);
+}
+
+h1 {
+    color: #FEFADF;
+    padding-top: 28px ;
+    font-size: 28px;
+    text-align: left; /* Align text to the left */
+    width: 90%;
+    margin: 0 auto; /* Center the h1 horizontally within the viewport */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+
+.dashboard {
+    padding: 28px 0;
+    display: grid;
+    grid-template-areas:
+        "rectangle1 rectangle1 rectangle2"
+        "rectangle3 rectangle4 rectangle2";
+    grid-template-columns: 5fr 1.2fr 1.2fr;
+    grid-template-rows: 1fr 1fr ; /* Uniform row heights */
+    grid-gap: 20px;
+
+    width: 90%;
+    height: 100vh; /* Ensure the dashboard fits within the viewport */
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.rectangle {
+    background-color: rgba(0, 0, 0, 0.301);
+    border-radius: 30px;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Assign specific areas */
+.rectangle1 {
+    grid-area: rectangle1;
+    height: 100%; /* Full height of the row */
+    grid-row: span 1;
+    animation: fadeinleft 0.5s ease-in-out 0s 1 normal forwards;
+}
+
+.rectangle2 {
+    grid-area: rectangle2;
+    height: 100%; /* Occupies two rows */
+    grid-row: span 2; /* Stretches across two grid rows */
+    animation: fadeinrt 0.5s ease-in-out 0s 1 normal forwards;
+}
+
+.rectangle3 {
+    grid-area: rectangle3;
+    height: 100%; /* Matches other rows */
+    grid-row: span 1;
+    animation: fadeinbt 0.5s ease-in-out 0s 1 normal forwards;
+}
+
+.rectangle4 {
+    grid-area: rectangle4;
+    height: 100%; /* Matches other rows */
+    grid-row: span 1;
+    animation: fadeinbt 0.5s ease-in-out 0s 1 normal forwards;
+}
+
+
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-areas:
+            "rectangle1"
+            "rectangle2"
+            "rectangle3"
+            "rectangle4"
+            "rectangle5";
+        grid-template-columns: 1fr;
+        grid-gap: 15px;
+    }
+
+    .rectangle {
+        height: auto; /* Allow automatic height adjustment */
+    }
+}
+
+
+.rectangle1-container {
+    display: flex;
+    height: 100%;
+    width: 100%; /* Ensure it fills the container */
+    gap: 20px; /* Add a 20px gap between part1 and part2 */
+}
+
+.rectangle1-part1 {
+    flex: 1 1 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    color: #FEFADF;
+    position: relative;
+    padding: 0 40px;
+}
+
+.rectangle1-part2 {
+    flex: 1 1 60%; /* Set 60% width, allow shrinking but no growth */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FEFADF;
+    border-radius: 15px;
+}
+
+
+
+/* Rectangle 1 */
+
+.temperature-header h5{
+    font-size: 16px;
+    margin: 0;
+}
+
+.temperature-header {
+    width: 100%;
+    margin: 0;
+    color: #F1B04C;
+}
+
+.temperature-value {
+    display: flex;
+    max-height: 70%;
+    align-items: center; /* Align items to the top */
+    justify-content: center; /* Center the items horizontally */
+}
+
+.temperature-value h1 {
+    font-size: 200px;
+    margin: 0;
+    padding-top: 0;
+    font-weight: 800;
+}
+
+.temperature-value .degrees {
+    font-size: 40px;
+    margin-top: -150px; /* Add some spacing to align with the top of the number */
+    margin-left: -10px; /* Add spacing between the number and the degrees */
+}
+
+.humidity {
+    display: flex;
+    justify-content: space-between; /* Push items to far left and far right */
+    align-items: center; /* Vertically center items */
+    width: 100%; /* Full width of the container */
+}
+
+.humidity h5 {
+    margin: 0;
+    font-size: 16px; /* Adjust font size */
+    color: #FEFADF;
+}
+
+.humidity-value {
+    display: flex;
+    align-items: center; /* Vertically center text and icon */
+    gap: 5px; /* Add spacing between the SVG and the percentage */
+}
+
+.humidity-value h5 {
+    margin: 0;
+    font-size: 16px; /* Consistent font size */
+    color: #FEFADF;
+}
+
+.humidity-value svg {
+    flex-shrink: 0; /* Prevent the SVG from resizing */
+}
+
+
+
+
+.rectangle1-part2 {
+    flex: 1 1 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #FEFADF;
+    border-radius: 15px;
+    padding: 20px;
+    overflow: hidden;
+    color: #1C2628;
+    font-size: 18px;
+    text-align: center;
+}
+
+
+
+/* Rectangle 2 */
+.rectangle2 {
+    grid-area: rectangle2;
+    display: flex; /* Ensure flex layout for container */
+    height: 100%;
+    padding: 20px; /* Adjust padding if necessary */
+}
+
+.rectangle2-container {
+    display: flex;
+    flex-direction: column; /* Arrange children vertically */
+    height: 100%; /* Full height of the rectangle */
+    width: 100%; /* Full width of the rectangle */
+    gap: 20px; /* Add space between the two parts */
+}
+
+.rectangle2-part1,
+.rectangle2-part2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    color: #1C2628; /* Text color */
+    padding: 20px;
+    overflow: hidden;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.rectangle2-part1 {
+    flex: 4; /* Takes 30% of the height */
+    background-color: #CADEDD; /* Example background color */
+}
+
+.rectangle2-part2 {
+    flex: 6; /* Takes 70% of the height */
+    background-color: #05050596; /* Example background color */
+}
+
+.date-time {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #1C2628; /* Text color */
+    text-align: center; /* Center-align all text */
+    height: 100%; /* Ensure the container takes full height */
+    box-sizing: border-box; /* Include padding in height calculation */
+}
+
+.day-date {
+    display: flex;
+    justify-content: space-between; /* Push day to the left and date to the right */
+    align-items: center;
+    width: 100%; /* Ensure it spans the full width of the container */
+    font-size: 36px; /* Uniform font size for day and date */
+    font-weight: bold; /* Bold styling */
+}
+
+.day {
+    text-align: left; /* Align text to the left */
+}
+
+.date {
+    text-align: right; /* Align text to the right */
+    font-weight: 300;
+}
+
+.time {
+    font-size: 130px;
+    font-weight: 900;
+    line-height: 1; /* Prevent extra spacing above and below text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto; /* Ensure the height adjusts to the content */
+    padding: 0; /* Remove any padding */
+}
+
+.ampm {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: -90px; /* Adjust vertical alignment */
+    vertical-align: top; /* Align AM/PM properly with the time */
+    line-height: 1;
+}
+
+.icon{
+    width: 50px;
+    height: 50px;
+    fill: #1C2628;
+    margin-top: 30px; /* Adjust vertical alignment */
+    margin-left: -25px;
+
+}
+
+
+/*Rectangle 2 Part 2*/
+.rectangle2-part2 {
+    display: flex;
+    flex-direction: column; /* Stack title and chart vertically */
+    align-items: center;    /* Center-align contents horizontally */          /* Add padding for breathing space */
+    padding: 10px;
+}
+
+
+
+
+
+/* Rectangle 3 */
+
+/* Rectangle 3 */
+
+.rectangle3 {
+    grid-area: rectangle3;
+    display: flex; /* Use flex layout */
+    height: 100%; /* Full height */
+    animation: fadeinbt 0.5s ease-in-out 0s 1 normal forwards;
+}
+
+.rectangle3-container {
+    display: flex; /* Flex container */
+    width: 100%; /* Full width of the container */
+    height: 100%; /* Full height of the container */
+}
+
+.rectangle3-part1 {
+    flex: 7; /* 80% of the space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.rectangle3-part2 {
+    flex: 3; /* Adjusts to 20% of the space */
+    display: flex;
+    justify-content: center; /* Horizontally centers the content */
+    align-items: center; /* Vertically centers the content */
+    border-radius: 15px;
+    background-color: #00000048; /* Example background color */
+    color: white;
+    padding: 10px;
+}
+.rectangle3-part2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.co2-header {
+    margin-bottom: -15px; /* Adjust spacing between header and gauge */
+    text-align: center;
+    color: #FEFADF;
+}
+
+.co2-header h5{
+    font-size: 20px;
+    margin: 0;
+}
+
+#g2 {
+    width: 200px;
+    height: 200px; /* Ensure it takes up the full height of the parent container */
+    display: flex; /* Makes the container a flexbox */
+    justify-content: center; /* Centers the content horizontally */
+    align-items: center; /* Centers the content vertically */
+}
+
+
+#g1 {
+    width: 330px;
+    height: 230px;
+    display: inline-block;
+    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+  }
+
+
+
+/* Rectangle 4 */
+.rectangle4 {
+    height: auto; /* or an explicit height, like 400px */
+    display: flex;
+    flex-direction: column; /* Arrange items vertically */
+    justify-content: flex-start; /* Align items to the top */
+    align-items: center;
+    padding: 30px;
+}
+
+.water-header {
+    margin-bottom: 20px; /* Space between header and the gauge */
+    color: #FEFADF;
+  
+}
+.water-header h5{
+    font-size: 16px;
+    margin: 0;
+}
+
+.gauge-container {
+    width: 70px;
+    height: 100%;
+    background-color: #FEFADF;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.water-level {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background: linear-gradient(45deg, #00bfff, #0077be);
+    border-top: 2px solid #ffffffaa;
+    transition: height 0.5s ease-in-out;
+}
+
+.water-label {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    font-weight: 800;
+    color: #333;
+    z-index: 2;
+}
