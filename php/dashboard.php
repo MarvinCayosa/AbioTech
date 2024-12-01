@@ -33,13 +33,21 @@
     <link rel="stylesheet" href="../css/dashboard.css" />
     <link rel="stylesheet" href="../css/scrollbar.css" />
     <script src="../script/dashboard.js" defer></script>
+    <script src="../script/sensor_data.js" defer></script>
     <script src="../script/raphael-2.1.4.min.js" defer></script>
     <script src="../script/justgage.js" defer></script>
 </head>
 <body>
 
-
-    <h1>Dashboard</h1>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Dashboard</span>
+            <div class="device-status ms-auto d-flex align-items-center">
+                <span class="status-circle online"></span>
+                <span class="status-text">Online</span>
+            </div>
+        </div>
+    </nav>
     <div class="dashboard">
         <div class="rectangle rectangle1">
             <div class="rectangle1-container">
@@ -87,13 +95,12 @@
                     </div>
                 </div>
                 <div class="rectangle2-part2">
-                    <div id="temperature-chart"></div>
+                    <div id="temperature-chart" style="margin-top: 20px;"></div>
+
                 </div>
 
             </div>
         </div>
-
-
 
         <div class="rectangle rectangle3">
             <div class="rectangle3-container">

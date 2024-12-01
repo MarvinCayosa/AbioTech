@@ -124,37 +124,37 @@
         </tr>
       </thead>
       <tbody id="tbody_table_record">
-        <?php
-          include 'database.php';
-          $num = 0;
-          //------------------------------------------------------------ The process for displaying a record table containing the DHT11 sensor data and the state of the LEDs.
-          $pdo = Database::connect();
-          // replace_with_your_table_name, on this project I use the table name 'esp32_table_dht11_leds_record'.
-          // This table is used to store and record DHT11 sensor data updated by ESP32. 
-          // This table is also used to store and record the state of the LEDs, the state of the LEDs is controlled from the "home.php" page. 
-          // To store data, this table is operated with the "INSERT" command, so this table will contain many rows.
-          $sql = 'SELECT * FROM esp32_table_dht11_leds_record ORDER BY date, time';
-          foreach ($pdo->query($sql) as $row) {
-            $date = date_create($row['date']);
-            $dateFormat = date_format($date,"d-m-Y");
-            $num++;
-            echo '<tr>';
-            echo '<td>'. $num . '</td>';
-            echo '<td class="bdr">'. $row['id'] . '</td>';
-            echo '<td class="bdr">'. $row['board'] . '</td>';
-            echo '<td class="bdr">'. $row['temperature'] . '</td>';
-            echo '<td class="bdr">'. $row['humidity'] . '</td>';
-            echo '<td class="bdr">'. $row['status_read_sensor_dht11'] . '</td>';
-            echo '<td class="bdr">'. $row['LED_01'] . '</td>';
-            echo '<td class="bdr">'. $row['LED_02'] . '</td>';
-            echo '<td class="bdr">'. $row['time'] . '</td>';
-            echo '<td>'. $dateFormat . '</td>';
-            echo '</tr>';
-          }
-          Database::disconnect();
-          //------------------------------------------------------------
-        ?>
+            <?php
+              include 'database.php';
+              $num = 0;
+              //------------------------------------------------------------
+              $pdo = Database::connect();
+              // Get today's date
+              $today = date("Y-m-d"); // Format: YYYY-MM-DD
+              // Modify query to fetch only today's records
+              $sql = 'SELECT * FROM esp32_table_dht11_leds_record WHERE date = ? ORDER BY time';
+              $stmt = $pdo->prepare($sql);
+              $stmt->execute([$today]);
+              foreach ($stmt as $row) {
+                $num++;
+                echo '<tr>';
+                echo '<td>' . $num . '</td>';
+                echo '<td class="bdr">' . $row['id'] . '</td>';
+                echo '<td class="bdr">' . $row['board'] . '</td>';
+                echo '<td class="bdr">' . $row['temperature'] . '</td>';
+                echo '<td class="bdr">' . $row['humidity'] . '</td>';
+                echo '<td class="bdr">' . $row['status_read_sensor_dht11'] . '</td>';
+                echo '<td class="bdr">' . $row['LED_01'] . '</td>';
+                echo '<td class="bdr">' . $row['LED_02'] . '</td>';
+                echo '<td class="bdr">' . $row['time'] . '</td>';
+                echo '<td>' . date("d-m-Y", strtotime($row['date'])) . '</td>';
+                echo '</tr>';
+              }
+              Database::disconnect();
+              //------------------------------------------------------------
+            ?>
       </tbody>
+
     </table>
     
     <br>
