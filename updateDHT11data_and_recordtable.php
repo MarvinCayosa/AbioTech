@@ -3,13 +3,15 @@
   
   //---------------------------------------- Condition to check that POST value is not empty.
   if (!empty($_POST)) {
-    //........................................ keep track POST values
+    //........................................ Keep track POST values
     $id = $_POST['id'];
     $temperature = $_POST['temperature'];
     $humidity = $_POST['humidity'];
+    $co2_level = $_POST['co2_level']; 
     $status_read_sensor_dht11 = $_POST['status_read_sensor_dht11'];
     $led_01 = $_POST['led_01'];
     $led_02 = $_POST['led_02'];
+ // New variable for CO2 level
     //........................................
     
     //........................................ Get the time and date.
@@ -21,13 +23,10 @@
     //........................................ Updating the data in the table.
     $pdo = Database::connect();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // replace_with_your_table_name, on this project I use the table name 'esp32_table_dht11_leds_update'.
-    // This table is used to store DHT11 sensor data updated by ESP32. 
-    // This table is also used to store the state of the LEDs, the state of the LEDs is controlled from the "home.php" page. 
-    // This table is operated with the "UPDATE" command, so this table will only contain one row.
-    $sql = "UPDATE esp32_table_dht11_leds_update SET temperature = ?, humidity = ?, status_read_sensor_dht11 = ?, time = ?, date = ? WHERE id = ?";
+    // Update the table with new data, including co2_level
+    $sql = "UPDATE esp32_table_dht11_leds_update SET temperature = ?, humidity = ?, status_read_sensor_dht11 = ?, co2_level = ?, time = ?, date = ? WHERE id = ?";
     $q = $pdo->prepare($sql);
-    $q->execute(array($temperature,$humidity,$status_read_sensor_dht11,$tm,$dt,$id));
+    $q->execute(array($temperature, $humidity, $status_read_sensor_dht11, $co2_level, $tm, $dt, $id));
     Database::disconnect();
     //........................................ 
     
@@ -41,11 +40,7 @@
     //:::::::: Process to check if "id" is already in use.
     while ($found_empty == false) {
       $id_key = generate_string_id(10);
-      // replace_with_your_table_name, on this project I use the table name 'esp32_table_dht11_leds_record'.
-      // This table is used to store and record DHT11 sensor data updated by ESP32. 
-      // This table is also used to store and record the state of the LEDs, the state of the LEDs is controlled from the "home.php" page. 
-      // This table is operated with the "INSERT" command, so this table will contain many rows.
-      // Before saving and recording data in this table, the "id" will be checked first, to ensure that the "id" that has been created has not been used in the table.
+      // Insert into record table, including co2_level
       $sql = 'SELECT * FROM esp32_table_dht11_leds_record WHERE id="' . $id_key . '"';
       $q = $pdo->prepare($sql);
       $q->execute();
@@ -58,13 +53,9 @@
     
     //:::::::: The process of entering data into a table.
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // replace_with_your_table_name, on this project I use the table name 'esp32_table_dht11_leds_record'.
-    // This table is used to store and record DHT11 sensor data updated by ESP32. 
-    // This table is also used to store and record the state of the LEDs, the state of the LEDs is controlled from the "home.php" page. 
-    // This table is operated with the "INSERT" command, so this table will contain many rows.
-		$sql = "INSERT INTO esp32_table_dht11_leds_record (id,board,temperature,humidity,status_read_sensor_dht11,LED_01,LED_02,time,date) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		$q = $pdo->prepare($sql);
-		$q->execute(array($id_key,$board,$temperature,$humidity,$status_read_sensor_dht11,$led_01,$led_02,$tm,$dt));
+    $sql = "INSERT INTO esp32_table_dht11_leds_record (id,board,temperature,humidity,status_read_sensor_dht11,LED_01,LED_02,co2_level,time,date) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $q = $pdo->prepare($sql);
+    $q->execute(array($id_key, $board, $temperature, $humidity, $status_read_sensor_dht11, $led_01, $led_02, $co2_level, $tm, $dt));
     //::::::::
     
     Database::disconnect();

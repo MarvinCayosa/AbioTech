@@ -12,6 +12,15 @@ DHT dht(DHTPIN, DHTTYPE);
 #define LED_1 13
 #define LED_2 12
 
+#define mqPin 35      // MQ135 connected to GPIO 35
+#define vSupply 3.3   // Power supply voltage to MQ135
+
+float R0 = 10.0; // Assume clean air resistance (this must be calibrated in clean air)
+float Rs;        // Resistance in the presence of gas
+float ppmNH3;    // Ammonia concentration in PPM
+float ppmCH2O;   // Formaldehyde concentration in PPM
+float ppmCO2;    // CO2 concentration in PPM
+
 
 // =================== WiFi Credentials ===================
 const char* ssid = "marvin";
@@ -25,7 +34,8 @@ String dhtStatus = "";
 String postData = "";
 String payload = "";
 
-// =================== Function Prototypes ===================
+
+// ================== Function Prototypes ===================
 void connectToWiFi();
 void fetchLEDStates();
 void controlLEDs();
@@ -37,11 +47,13 @@ String constructGasPostData();
 // =================== Setup ===================
 void setup() {
     Serial.begin(115200);
+    
 
     // Initialize pins
     pinMode(ON_BOARD_LED, OUTPUT);
     pinMode(LED_1, OUTPUT);
     pinMode(LED_2, OUTPUT);
+    pinMode(mqPin, INPUT);
 
     // Initial LED state
     digitalWrite(ON_BOARD_LED, LOW);
@@ -64,6 +76,8 @@ void loop() {
 
         // Read DHT sensor data
         readDHTSensor();
+
+        readMQSensor();
 
         // Construct and send DHT/LED data to the server
         String dhtPostData = constructDHTPostData();
@@ -145,6 +159,27 @@ void readDHTSensor() {
     Serial.printf("DHT Status: %s\n", dhtStatus.c_str());
 }
 
+void readMQSensor() {
+  int sensorValue = analogRead(mqPin);  // Read sensor value
+  Rs = (1023.0 / sensorValue) - 1.0;    // Calculate Rs from the analog reading
+
+  // Calculate PPM of Ammonia (NH3)
+  ppmNH3 = 2.3 * pow(Rs / R0, -1.5);  // Constants for NH3
+  Serial.print("Ammonia (NH3) PPM: ");
+  Serial.println(ppmNH3);
+
+  // Calculate PPM of Formaldehyde (CH2O)
+  ppmCH2O = 2.6 * pow(Rs / R0, -1.4);  // Adjusted constants for CH2O
+  Serial.print("Formaldehyde (CH2O) PPM: ");
+  Serial.println(ppmCH2O);
+
+  // Calculate PPM of CO2 (Carbon Dioxide)
+  ppmCO2 = 0.45 * pow(Rs / R0, -2.5);  // Use constants for CO2 (example constants)
+  Serial.print("CO2 PPM: ");
+  Serial.println(ppmCO2);
+
+}
+
 void sendDataToServer(const String& url, const String& data) {
     HTTPClient http;
     http.begin(url);
@@ -165,6 +200,7 @@ String constructDHTPostData() {
     String data = "id=esp32_01";
     data += "&temperature=" + String(temperature);
     data += "&humidity=" + String(humidity);
+    data += "&co2_level=" + String(ppmCO2);
     data += "&status_read_sensor_dht11=" + dhtStatus;
     data += "&led_01=" + led1State;
     data += "&led_02=" + led2State;
@@ -173,3 +209,6 @@ String constructDHTPostData() {
 
     return data;
 }
+
+
+

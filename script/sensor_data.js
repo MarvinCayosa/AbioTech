@@ -15,6 +15,11 @@ function fetchSensorData() {
         // Update temperature and humidity values with one decimal place
         document.querySelector(".temperature-value h1").textContent = parseFloat(myObj.temperature).toFixed(1);
         document.querySelector(".humidity-value h5").textContent = `${parseFloat(myObj.humidity).toFixed(1)}%`;
+
+        // Update the CO2 level gauge with the fetched co2_level value
+        if (myObj.co2_level !== undefined) {
+          g2.refresh(myObj.co2_level); // Assuming co2_level is a number and is in the range of 0 to 2500 ppm
+        }
       }
     }
   };

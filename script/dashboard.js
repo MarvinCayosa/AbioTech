@@ -137,10 +137,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // Define g2 outside the event listener to make it globally accessible
     window.g2 = new JustGage({
         id: "g2",
-        value: getRandomInt(0, 2500), // Initial value within the range of 0 to 2500
+        value: 0, // Initial value within the range of 0 to 2500
         min: 0,
-        max: 2500, // Max value updated to 2500
-
+        max: 1000, // Max value updated to 2500
         titleFontColor: "#FEFADF",
         donut: true,
         valueFontColor: "#FEFADF",
@@ -162,11 +161,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 
 });
-
-// Refresh the gauge value every 2.5 seconds with a random value between 0 and 2500
-setInterval(function () {
-    g2.refresh(getRandomFloat(0, 2500)); // Random value between 0 and 2500
-}, 2500);
 
 // Random float value generator function
 function getRandomFloat(min, max) {
