@@ -432,7 +432,11 @@ body {
 }
 
 
-
+h7{
+    font-size: 16px;
+    margin: 0;
+    color: #fefadf92;
+}
 
 
 /* Rectangle 3 */
@@ -568,4 +572,67 @@ body {
     font-weight: 800;
     color: #333;
     z-index: 2;
+}
+
+#chart-container {
+    width: 100%;
+    height: 100%;
+
+}
+
+
+
+.tooltip-inner {
+    background-color: #1C2628 !important; /* Custom background color */
+    color: #ffffff !important; /* Custom text color */
+    border-radius: 8px; /* Optional: Add rounded corners */
+    padding: 10px; /* Optional: Add padding for better readability */
+    max-width: 450px; /* Keep the width setting for landscape layout */
+}
+
+.tooltip-arrow {
+    border-top-color: #1C2628 !important; /* Match arrow color with tooltip */
+    border-left-color: #1C2628 !important; /* Adjust based on placement */
+}
+
+.tooltip-content {
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+    max-width: 400px; /* Adjust width as needed */
+    white-space: normal; /* Ensure text wraps properly */
+}
+
+.tooltip-content p {
+    margin: 0 0 8px;
+}
+
+.tooltip-level div {
+    margin: 4px 0; /* Spacing between levels */
+    display: flex;
+    align-items: center;
+}
+
+.tooltip-content .color-box {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    border-radius: 2px;
+}
+
+.color-box.green {
+    background-color: #28a745;
+}
+
+.color-box.yellow {
+    background-color: #ffc107;
+}
+
+.color-box.orange {
+    background-color: #fd7e14;
+}
+
+.color-box.red {
+    background-color: #dc3545;
 }

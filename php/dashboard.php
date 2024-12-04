@@ -94,8 +94,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="toggle-container">
+                    <button id="toggleTemp" class="btn btn-primary active">Temperature</button>
+                    <button id="toggleHumidity" class="btn btn-secondary">Humidity</button>
+                </div>
                 <div class="rectangle2-part2">
-                    <div id="temperature-chart" style="margin-top: 20px;"></div>
+       
+                    <div id="chart-container">
+                        <div id="temperature-chart" style="margin-top: 20px;"></div>
+                        <div id="humidity-chart" style="margin-top: 20px; display: none;"></div>
+                    </div>
                 </div>
 
             </div>
@@ -104,21 +112,64 @@
         <div class="rectangle rectangle3">
             <div class="rectangle3-container">
                 <div class="rectangle3-part2">
-                    <div class="co2-header">
+                    <div class="co2-header" 
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="right" 
+                    data-bs-html="true" 
+                    data-bs-title='
+                        <div class="tooltip-content">
+                            <p><strong>Carbon Dioxide (CO2)</strong></p>
+                            <p>CO2 is a pollutant released by the burning of fossil fuels, respiration, deforestation, and industrial processes.</p>
+                            <div class="tooltip-level">
+                                <p>Safety Levels:</p>
+                                <div><span class="color-box green"></span> Good (400-800 ppm)</div>
+                                <div><span class="color-box yellow"></span> Fair (800-1200 ppm)</div>
+                                <div><span class="color-box orange"></span> Poor (1200-1800 ppm)</div>
+                                <div><span class="color-box red"></span> Dangerous (1800-2100 ppm)</div>
+                            </div>
+                        </div>'>
                             <h5>CO2</h5>
                             <h7>Carbon Dioxide</h7>
                     </div>
                      <div id="g2" class="gauge"></div>
                 </div>
                 <div class="rectangle3-part2">
-                    <div class="co2-header">
+                    <div class="co2-header" 
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="right" 
+                    data-bs-html="true" 
+                    data-bs-title='
+                        <div class="tooltip-content">
+                            <p><strong>Ammonia (NH3)</strong></p>
+                            <p>Ammonia is a gas primarily released by agricultural processes, wastewater treatment, and industrial activities.</p>
+                            <div class="tooltip-level">
+                                <div><span class="color-box green"></span> Safe to Tolerable (0-55 ppm)</div>
+                                <div><span class="color-box red"></span> Unsafe (Above 55 ppm)</div>
+                            </div>
+                        </div>'>
                             <h5>NH3</h5>
+                            <h7>Ammonia</h7>
                     </div>
                      <div id="g3" class="gauge"></div>
                 </div>
                 <div class="rectangle3-part2">
-                    <div class="co2-header">
+                    <div class="co2-header" 
+                        data-bs-toggle="tooltip" 
+                        data-bs-placement="right" 
+                        data-bs-html="true" 
+                        data-bs-title='
+                            <div class="tooltip-content">
+                                <p><strong>Formaldehyde (CH2O)</strong></p>
+                                <p>Formaldehyde is a colorless, strong-smelling gas used in building materials, and is also a byproduct of combustion and industrial processes.</p>
+                                <div class="tooltip-level">
+                                    <div><span class="color-box green"></span> Safe to Tolerable (0–0.1 ppm) - For general indoor air, within the WHO recommended limits</div>
+                                    <div><span class="color-box yellow"></span> Caution (0.1–0.3 ppm) - Indoor levels that may cause irritation in sensitive individuals</div>
+                                    <div><span class="color-box orange"></span> Hazardous (0.3–1.0 ppm) - Long-term exposure may lead to health risks like respiratory irritation</div>
+                                    <div><span class="color-box red"></span> Dangerous (Above 1.0 ppm) - High risk of acute toxicity, should be avoided</div>
+                                </div>
+                            </div>'>
                         <h5>CH2O</h5>
+                        <h7>Formaldehyde</h7>
                     </div>
                     <div id="g4" class="gauge"></div>
                 </div>
