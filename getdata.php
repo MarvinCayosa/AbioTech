@@ -10,15 +10,30 @@
     
     //........................................ 
     $pdo = Database::connect();
-    // replace_with_your_table_name, on this project I use the table name 'esp32_table_dht11_leds_update'.
-    // This table is used to store DHT11 sensor data updated by ESP32. 
-    // This table is also used to store the state of the LEDs, the state of the LEDs is controlled from the "home.php" page. 
-    // To store data, this table is operated with the "UPDATE" command, so this table contains only one row.
+    // Query to fetch data from the table, filtering by the provided ID
     $sql = 'SELECT * FROM esp32_table_dht11_leds_update WHERE id="' . $id . '"';
-    foreach ($pdo->query($sql) as $row) {
+    $stmt = $pdo->query($sql);
+    
+    // Check if data is found
+    if ($stmt && $stmt->rowCount() > 0) {
+      // Data found, process it
+      $row = $stmt->fetch();
       $date = date_create($row['date']);
-      $dateFormat = date_format($date,"d-m-Y");
+      $dateFormat = date_format($date, "d-m-Y");
+
+      // Check if the data is recent (within the last 10 minutes)
+      $currentTime = new DateTime();
+      $dataTime = new DateTime($row['date']);
+      $interval = $currentTime->diff($dataTime);
       
+      // If the difference is greater than 10 minutes, mark it as offline
+      if ($interval->i > 10) {
+        $myObj->status = "offline";  // Last update was too old
+      } else {
+        $myObj->status = "online";  // Data is recent, device is online
+      }
+      
+      // Process other data fields
       $myObj->id = $row['id'];
       $myObj->temperature = $row['temperature'];
       $myObj->humidity = $row['humidity'];
@@ -29,11 +44,14 @@
       $myObj->ls_time = $row['time'];
       $myObj->ls_date = $dateFormat;
       
-      
-      $myJSON = json_encode($myObj);
-      
-      echo $myJSON;
+      // Send back data in JSON format
+      echo json_encode($myObj);
+    } else {
+      // No data found, indicate offline
+      $myObj->status = "offline";  // No data available
+      echo json_encode($myObj);  // Send the offline status as JSON
     }
+    
     Database::disconnect();
     //........................................ 
   }

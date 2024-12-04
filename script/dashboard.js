@@ -68,70 +68,7 @@ updateStatus(true); // Set to online
 
 
 
-//gauge//
-document.addEventListener("DOMContentLoaded", function (event) {
-
-    var g1 = new JustGage({
-      id: "g1",
-      value: getRandomFloat(0, 100),
-      min: 0,
-      max: 125.0,
-      title: "Air Quality Index",
-      decimals: 2,
-      gaugeWidthScale: .3,
-      gaugeColor:'#FEFADF',
-      pointer: true,
-      pointerOptions: {
-        toplength: -2,
-        bottomlength: 2,
-        bottomwidth: 8,
-        color: '#1C2628',
-        stroke: '#ffffffc',
-        stroke_width: 1,
-        stroke_linecap: 'round'
-      },
-      titleFontColor: "#FEFADF",
-      titleFontFamily: "Roboto",
-      titleFontSize: 0,
-      titleMinFontSize: 10,
-      valueFontColor: "#FEFADF",
-      valueFontFamily: "Roboto",
-      label: 'µg/m³',
-
-      customSectors: [
-        {
-          color: "#00cc66", // Green
-          lo: 0,
-          hi: 9
-        },
-        {
-          color: "#ffcc00", // Yellow
-          lo: 9.1,
-          hi: 35.4
-        },
-        {
-          color: "#ff9900", // Orange
-          lo: 35.5,
-          hi: 55.4
-        },
-        {
-          color: "#ff3333", // Red
-          lo: 55.5,
-          hi: 125.0
-        }
-      ],
-      
-    });
-    setInterval(function () {
-        g1.refresh(getRandomFloat(0, 125));
-    }, 2500);
-
-    // Random float value generator function
-    function getRandomFloat(min, max) {
-        return (Math.random() * (max - min) + min).toFixed(2);
-    }
-});
-
+//gauge1//
 document.addEventListener("DOMContentLoaded", function (event) {
 
     // Define g2 outside the event listener to make it globally accessible
@@ -139,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         id: "g2",
         value: 0, // Initial value within the range of 0 to 2500
         min: 0,
-        max: 1000, // Max value updated to 2500
+        max: 20000, // Max value updated to 2500
         titleFontColor: "#FEFADF",
         donut: true,
         valueFontColor: "#FEFADF",
@@ -161,6 +98,69 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 
 });
+
+//gauge2//
+document.addEventListener("DOMContentLoaded", function (event) {
+
+    // Define g2 outside the event listener to make it globally accessible
+    window.g3 = new JustGage({
+        id: "g3",
+        value: 0, // Initial value within the range of 0 to 2500
+        min: 0,
+        max: 20000, // Max value updated to 2500
+        titleFontColor: "#FEFADF",
+        donut: true,
+        valueFontColor: "#FEFADF",
+        titleFontFamily: "Roboto",
+        gaugeWidthScale: 0.4,
+        gaugeColor: '#FEFADF',
+        label: 'ppm',
+        counter: true,
+        pointer: true,
+        pointerOptions: {
+            toplength: -2,
+            bottomlength: 2,
+            bottomwidth: 8,
+            color: '#1C2628',
+            stroke: '#ffffffc',
+            stroke_width: 1,
+            stroke_linecap: 'round'
+        },
+    });
+
+});
+
+//gauge3//
+document.addEventListener("DOMContentLoaded", function (event) {
+
+    // Define g2 outside the event listener to make it globally accessible
+    window.g4 = new JustGage({
+        id: "g4",
+        value: 0, // Initial value within the range of 0 to 2500
+        min: 0,
+        max: 20000, // Max value updated to 2500
+        titleFontColor: "#FEFADF",
+        donut: true,
+        valueFontColor: "#FEFADF",
+        titleFontFamily: "Roboto",
+        gaugeWidthScale: 0.4,
+        gaugeColor: '#FEFADF',
+        label: 'ppm',
+        counter: true,
+        pointer: true,
+        pointerOptions: {
+            toplength: -2,
+            bottomlength: 2,
+            bottomwidth: 8,
+            color: '#1C2628',
+            stroke: '#ffffffc',
+            stroke_width: 1,
+            stroke_linecap: 'round'
+        },
+    });
+
+});
+
 
 // Random float value generator function
 function getRandomFloat(min, max) {

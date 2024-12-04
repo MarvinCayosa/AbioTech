@@ -96,7 +96,6 @@
                 </div>
                 <div class="rectangle2-part2">
                     <div id="temperature-chart" style="margin-top: 20px;"></div>
-
                 </div>
 
             </div>
@@ -104,14 +103,24 @@
 
         <div class="rectangle rectangle3">
             <div class="rectangle3-container">
-                <div class="rectangle3-part1">
-                    <div id="g1"></div>
+                <div class="rectangle3-part2">
+                    <div class="co2-header">
+                            <h5>CO2</h5>
+                            <h7>Carbon Dioxide</h7>
+                    </div>
+                     <div id="g2" class="gauge"></div>
                 </div>
                 <div class="rectangle3-part2">
                     <div class="co2-header">
-                        <h5>CO2 Level</h5>
+                            <h5>NH3</h5>
                     </div>
-                    <div id="g2" class="gauge"></div>
+                     <div id="g3" class="gauge"></div>
+                </div>
+                <div class="rectangle3-part2">
+                    <div class="co2-header">
+                        <h5>CH2O</h5>
+                    </div>
+                    <div id="g4" class="gauge"></div>
                 </div>
             </div>
         </div>
@@ -126,6 +135,7 @@
                 <div class="water-level" style="height: 0%;"></div>
             </div>
         </div>
+
 
     <div class="background-box top-blur"><div class="ellipse"></div></div>
     <div class="background-box bottom-blur"><div class="ellipse"></div></div>
