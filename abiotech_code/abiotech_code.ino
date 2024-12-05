@@ -200,12 +200,11 @@ String constructDHTPostData() {
     String data = "id=esp32_01";
     data += "&temperature=" + String(temperature);
     data += "&humidity=" + String(humidity);
-    data += "&CO2=" + String(ppmCO2);
-    data += "&NH3=" + String(ppmNH3);
-    data += "&CH2O=" + String(ppmCH2O);
+    data += "&co2_level=" + String(ppmCO2);
     data += "&status_read_sensor_dht11=" + dhtStatus;
     data += "&led_01=" + led1State;
     data += "&led_02=" + led2State;
+
 
 
     return data;

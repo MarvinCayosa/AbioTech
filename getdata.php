@@ -37,9 +37,7 @@
       $myObj->id = $row['id'];
       $myObj->temperature = $row['temperature'];
       $myObj->humidity = $row['humidity'];
-      $myObj->CO2 = $row['CO2'];
-      $myObj->NH3 = $row['NH3'];
-      $myObj->CH2O = $row['CH2O'];
+      $myObj->co2_level = $row['co2_level'];
       $myObj->status_read_sensor_dht11 = $row['status_read_sensor_dht11'];
       $myObj->LED_01 = $row['LED_01'];
       $myObj->LED_02 = $row['LED_02'];
