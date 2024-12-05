@@ -1,6 +1,7 @@
 AOS.init();
 
-
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 // Function to format date and time
 function updateDateTime() {
@@ -68,15 +69,15 @@ updateStatus(true); // Set to online
 
 
 
-//gauge1//
+//gauge1 CO2//
 document.addEventListener("DOMContentLoaded", function (event) {
 
     // Define g2 outside the event listener to make it globally accessible
     window.g2 = new JustGage({
         id: "g2",
-        value: 0, // Initial value within the range of 0 to 2500
+        value: 900, // Initial value for CO2 concentration
         min: 0,
-        max: 20000, // Max value updated to 2500
+        max: 2500, // Max value for CO2, as per safety levels
         titleFontColor: "#FEFADF",
         donut: true,
         valueFontColor: "#FEFADF",
@@ -95,19 +96,27 @@ document.addEventListener("DOMContentLoaded", function (event) {
             stroke_width: 1,
             stroke_linecap: 'round'
         },
+        // Custom intervals based on CO2 safety levels
+        customSectors: [
+            { color: '#28a745', lo: 0, hi: 800 },  // Green for Good (400-800 ppm)
+            { color: '#ffc107', lo: 800, hi: 1200 }, // Yellow for Fair (800-1200 ppm)
+            { color: '#fd7e14', lo: 1200, hi: 1800 }, // Orange for Poor (1200-1800 ppm)
+            { color: '#dc3545', lo: 1800, hi: 2500 }, // Red for Dangerous (1800-2500 ppm)
+        ],
     });
 
 });
 
-//gauge2//
+
+//gauge2 Ammonia//
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    // Define g2 outside the event listener to make it globally accessible
+    // Define g3 outside the event listener to make it globally accessible
     window.g3 = new JustGage({
         id: "g3",
-        value: 0, // Initial value within the range of 0 to 2500
+        value: 3, // Initial value for ammonia concentration
         min: 0,
-        max: 20000, // Max value updated to 2500
+        max: 100, // Max value for ammonia, as per safety levels (Unsafe starts above 55 ppm)
         titleFontColor: "#FEFADF",
         donut: true,
         valueFontColor: "#FEFADF",
@@ -126,19 +135,25 @@ document.addEventListener("DOMContentLoaded", function (event) {
             stroke_width: 1,
             stroke_linecap: 'round'
         },
+        // Custom intervals based on ammonia safety levels
+        customSectors: [
+            { color: '#28a745', lo: 0, hi: 55 },  // Green for Safe to Tolerable (0-55 ppm)
+            { color: '#dc3545', lo: 55, hi: 100 }, // Red for Unsafe (Above 55 ppm)
+        ],
     });
 
 });
 
-//gauge3//
+
+//gauge3 Formaldehyde//
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    // Define g2 outside the event listener to make it globally accessible
+    // Define g4 outside the event listener to make it globally accessible
     window.g4 = new JustGage({
         id: "g4",
-        value: 0, // Initial value within the range of 0 to 2500
+        value: 0.1, // Initial value for formaldehyde concentration
         min: 0,
-        max: 20000, // Max value updated to 2500
+        max: 2, // Max value for formaldehyde, since Dangerous starts above 1 ppm
         titleFontColor: "#FEFADF",
         donut: true,
         valueFontColor: "#FEFADF",
@@ -157,9 +172,21 @@ document.addEventListener("DOMContentLoaded", function (event) {
             stroke_width: 1,
             stroke_linecap: 'round'
         },
+        // Custom intervals based on formaldehyde safety levels
+        customSectors: [
+            { color: '#28a745', lo: 0, hi: 0.1 },   // Green for Safe to Tolerable (0-0.1 ppm)
+            { color: '#ffc107', lo: 0.1, hi: 0.3 },  // Yellow for Caution (0.1-0.3 ppm)
+            { color: '#fd7e14', lo: 0.3, hi: 1.0 },  // Orange for Hazardous (0.3-1.0 ppm)
+            { color: '#dc3545', lo: 1.0, hi: 2.0 },  // Red for Dangerous (Above 1.0 ppm)
+        ],
+        // Decimal formatting for the value displayed on the gauge
+        formatNumber: function (value) {
+            return value.toFixed(2); // This will ensure two decimal places
+        }
     });
 
 });
+
 
 
 // Random float value generator function
@@ -201,6 +228,7 @@ function updateWaterLevel() {
 
 
   document.addEventListener("DOMContentLoaded", function () {
+    // Fetch Temperature Data
     fetch("getTempData.php")
         .then((response) => response.json())
         .then((data) => {
@@ -225,17 +253,17 @@ function updateWaterLevel() {
                 .filter((item, index) => index % 10 === 0)  // Filter corresponding temperature data
                 .map((item) => item.temperature);
 
-            // Configure and render the chart
-            const options = {
+            // Temperature Chart Options
+            const tempOptions = {
                 chart: {
                     type: "line",
                     height: "100%",
-                    width: "120%",
+                    width: "110%",
                     toolbar: { show: false }
                 },
                 stroke: {
-                    width: 2.5,  // Adjust the stroke width as desired
-                    curve: "smooth",  // Define the curve style (e.g., smooth line)
+                    width: 2.5,
+                    curve: "smooth",
                 },
                 title: {
                     text: "Temperature for the Past Hour",
@@ -257,16 +285,16 @@ function updateWaterLevel() {
                     categories: labels,
                     labels: {
                         style: {
-                            fontSize: "12px",  // Reduce font size to prevent cramping
+                            fontSize: "12px",
                             fontFamily: "Roboto",
                             fontWeight: 300,
                             colors: "#FEFADF"
                         },
-                        rotate: -60,  // Rotate labels to prevent overlap
+                        rotate: -60,
                     },
-                    tickAmount: labels.length > 6 ? 6 : labels.length, // Show only 5 labels to create space
-                    interval: 2,  // Add space by showing every other label
-                    show: true,  // Ensure labels are visible
+                    tickAmount: labels.length > 6 ? 6 : labels.length,
+                    interval: 2,
+                    show: true,
                 },
                 yaxis: {
                     labels: {
@@ -280,35 +308,124 @@ function updateWaterLevel() {
                     min: Math.min(...temperatureData) - 1,
                     max: Math.max(...temperatureData) + 1
                 },
-                grid: {
-                    show: true, // Ensure grid lines are visible
-                    borderColor: "#bababa4c",
-                    strokeDashArray: 0, // Solid lines; increase this for dashed lines
-                    position: "back", // Ensure grid lines render behind data points
-                    xaxis: { lines: { show: false } }, // Ensure x-axis grid lines are visible
-                    yaxis: { lines: { show: true } },
-                    row: {
-                        colors: "#bababa4c",
-                        opacity: 0.5
-                    },   // Ensure y-axis grid lines are visible
-                },
-                
                 tooltip: {
                     enabled: true,
-                    followCursor: true, // Make the tooltip follow the cursor
+                    followCursor: true,
                     custom: function({ series, seriesIndex, dataPointIndex, w }) {
                         const value = series[seriesIndex][dataPointIndex];
                         return `<div style="background: #e7ae1d; color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 12px; text-align: center;">
                             ${value}°C
                         </div>`;
                     },
-                    offsetY: -20 // Adjust the tooltip to appear above the cursor
+                    offsetY: -20
                 },
-                colors: ["#e7ae1d"]  // Change this to the desired line color
+                colors: ["#e7ae1d"]
             };
 
-            const chart = new ApexCharts(document.querySelector("#temperature-chart"), options);
-            chart.render();
+            // Initialize Temperature Chart
+            const tempChart = new ApexCharts(document.querySelector("#temperature-chart"), tempOptions);
+            tempChart.render();
+
+            // Fetch Humidity Data
+            fetch("getHumData.php")
+                .then((response) => response.json())
+                .then((humidityData) => {
+                    const humidityValues = humidityData.map((item) => item.humidity);
+
+                    // Humidity Chart Options
+                    const humidityOptions = {
+                        chart: {
+                            type: "line",
+                            height: "90%",
+                            width: "110%",
+                            toolbar: { show: false }
+                        },
+                        stroke: {
+                            width: 2.5,
+                            curve: "smooth",
+                        },
+                        title: {
+                            text: "Humidity for the Past Hour",
+                            align: "center",
+                            style: {
+                                fontSize: "16px",
+                                fontFamily: "Roboto",
+                                fontWeight: 300,
+                                color: "#FEFADF"
+                            }
+                        },
+                        series: [
+                            {
+                                name: "Humidity (%)",
+                                data: humidityValues
+                            }
+                        ],
+                        xaxis: {
+                            categories: labels,
+                            labels: {
+                                style: {
+                                    fontSize: "12px",
+                                    fontFamily: "Roboto",
+                                    fontWeight: 300,
+                                    colors: "#FEFADF"
+                                },
+                                rotate: -60,
+                            },
+                            tickAmount: labels.length > 6 ? 6 : labels.length,
+                            interval: 2,
+                            show: true,
+                        },
+                        yaxis: {
+                            labels: {
+                                style: {
+                                    fontSize: "12px",
+                                    fontFamily: "Roboto",
+                                    fontWeight: 300,
+                                    colors: "#FEFADF"
+                                }
+                            },
+                            min: Math.min(...humidityValues) - 1,
+                            max: Math.max(...humidityValues) + 1
+                        },
+                        tooltip: {
+                            enabled: true,
+                            followCursor: true,
+                            custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                                const value = series[seriesIndex][dataPointIndex];
+                                return `<div style="background: #00bfff; color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 12px; text-align: center;">
+                                    ${value}%
+                                </div>`;
+                            },
+                            offsetY: -20
+                        },
+                        colors: ["#00bfff"]
+                    };
+
+                    // Initialize Humidity Chart
+                    const humidityChart = new ApexCharts(document.querySelector("#humidity-chart"), humidityOptions);
+                    humidityChart.render();
+
+                    // Toggle Buttons
+                    const toggleTempBtn = document.getElementById("toggleTemp");
+                    const toggleHumidityBtn = document.getElementById("toggleHumidity");
+                    const tempChartContainer = document.getElementById("temperature-chart");
+                    const humidityChartContainer = document.getElementById("humidity-chart");
+
+                    toggleTempBtn.addEventListener("click", () => {
+                        tempChartContainer.style.display = "block";
+                        humidityChartContainer.style.display = "none";
+                        toggleTempBtn.classList.add("active");
+                        toggleHumidityBtn.classList.remove("active");
+                    });
+
+                    toggleHumidityBtn.addEventListener("click", () => {
+                        tempChartContainer.style.display = "none";
+                        humidityChartContainer.style.display = "block";
+                        toggleTempBtn.classList.remove("active");
+                        toggleHumidityBtn.classList.add("active");
+                    });
+                })
+                .catch((error) => console.error("Error fetching humidity data:", error));
         })
         .catch((error) => console.error("Error fetching temperature data:", error));
 });
