@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // Define g2 outside the event listener to make it globally accessible
     window.g2 = new JustGage({
         id: "g2",
-        value: 900, // Initial value for CO2 concentration
+        value: 0, // Initial value for CO2 concentration
         min: 0,
         max: 2500, // Max value for CO2, as per safety levels
         titleFontColor: "#FEFADF",
@@ -103,6 +103,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
             { color: '#fd7e14', lo: 1200, hi: 1800 }, // Orange for Poor (1200-1800 ppm)
             { color: '#dc3545', lo: 1800, hi: 2500 }, // Red for Dangerous (1800-2500 ppm)
         ],
+        formatNumber: function (value) {
+            return value.toFixed(2); // Display with two decimal places
+        }
     });
 
 });
@@ -140,6 +143,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
             { color: '#28a745', lo: 0, hi: 55 },  // Green for Safe to Tolerable (0-55 ppm)
             { color: '#dc3545', lo: 55, hi: 100 }, // Red for Unsafe (Above 55 ppm)
         ],
+        formatNumber: function (value) {
+            return value.toFixed(2); // Display with two decimal places
+        }
     });
 
 });
@@ -201,22 +207,19 @@ function getRandomInt(min, max) {
 
 
 
-// Update water level//
-function updateWaterLevel() {
+// Function to update water level visually
+function updateWaterLevel(waterLevelCm) {
     const waterLevelElement = document.querySelector(".water-level");
     const waterLabelElement = document.querySelector(".water-label");
-
-    // Generate a random water level in centimeters (0 to 70 cm)
-    const waterLevelCm = Math.random() * 70;
-
+  
     // Convert water level to percentage (0 to 100%)
-    const waterLevelPercentage = (waterLevelCm / 70) * 100;
-
+    const waterLevelPercentage = (waterLevelCm / 70) * 100; // Assuming 70 cm is the maximum level
+  
     // Update the height of the water level bar
     waterLevelElement.style.height = `${waterLevelPercentage}%`;
-
+  
     // Update the label to show the water level in centimeters
-    waterLabelElement.textContent = `${Math.round(waterLevelCm)}cm`;
+    waterLabelElement.textContent = `${Math.round(waterLevelCm)} cm`;
   }
 
   // Update water level every 2 seconds
@@ -226,9 +229,7 @@ function updateWaterLevel() {
   updateWaterLevel();
 
 
-
   document.addEventListener("DOMContentLoaded", function () {
-    // Fetch Temperature Data
     fetch("getTempData.php")
         .then((response) => response.json())
         .then((data) => {
@@ -253,12 +254,12 @@ function updateWaterLevel() {
                 .filter((item, index) => index % 10 === 0)  // Filter corresponding temperature data
                 .map((item) => item.temperature);
 
-            // Temperature Chart Options
-            const tempOptions = {
+            // Configure and render the chart
+            const options = {
                 chart: {
                     type: "line",
                     height: "100%",
-                    width: "110%",
+                    width: "100%", 
                     toolbar: { show: false }
                 },
                 stroke: {
@@ -292,9 +293,7 @@ function updateWaterLevel() {
                         },
                         rotate: -60,
                     },
-                    tickAmount: labels.length > 6 ? 6 : labels.length,
-                    interval: 2,
-                    show: true,
+                    tickAmount: Math.min(labels.length, 6),
                 },
                 yaxis: {
                     labels: {
@@ -308,124 +307,27 @@ function updateWaterLevel() {
                     min: Math.min(...temperatureData) - 1,
                     max: Math.max(...temperatureData) + 1
                 },
+                grid: {
+                    borderColor: "#bababa4c",
+                    xaxis: { lines: { show: false } },
+                    yaxis: { lines: { show: true } },
+                },
                 tooltip: {
                     enabled: true,
                     followCursor: true,
-                    custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                    custom: function ({ series, seriesIndex, dataPointIndex }) {
                         const value = series[seriesIndex][dataPointIndex];
                         return `<div style="background: #e7ae1d; color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 12px; text-align: center;">
-                            ${value}°C
-                        </div>`;
+                                    ${value}°C
+                                </div>`;
                     },
                     offsetY: -20
                 },
                 colors: ["#e7ae1d"]
             };
 
-            // Initialize Temperature Chart
-            const tempChart = new ApexCharts(document.querySelector("#temperature-chart"), tempOptions);
-            tempChart.render();
-
-            // Fetch Humidity Data
-            fetch("getHumData.php")
-                .then((response) => response.json())
-                .then((humidityData) => {
-                    const humidityValues = humidityData.map((item) => item.humidity);
-
-                    // Humidity Chart Options
-                    const humidityOptions = {
-                        chart: {
-                            type: "line",
-                            height: "90%",
-                            width: "110%",
-                            toolbar: { show: false }
-                        },
-                        stroke: {
-                            width: 2.5,
-                            curve: "smooth",
-                        },
-                        title: {
-                            text: "Humidity for the Past Hour",
-                            align: "center",
-                            style: {
-                                fontSize: "16px",
-                                fontFamily: "Roboto",
-                                fontWeight: 300,
-                                color: "#FEFADF"
-                            }
-                        },
-                        series: [
-                            {
-                                name: "Humidity (%)",
-                                data: humidityValues
-                            }
-                        ],
-                        xaxis: {
-                            categories: labels,
-                            labels: {
-                                style: {
-                                    fontSize: "12px",
-                                    fontFamily: "Roboto",
-                                    fontWeight: 300,
-                                    colors: "#FEFADF"
-                                },
-                                rotate: -60,
-                            },
-                            tickAmount: labels.length > 6 ? 6 : labels.length,
-                            interval: 2,
-                            show: true,
-                        },
-                        yaxis: {
-                            labels: {
-                                style: {
-                                    fontSize: "12px",
-                                    fontFamily: "Roboto",
-                                    fontWeight: 300,
-                                    colors: "#FEFADF"
-                                }
-                            },
-                            min: Math.min(...humidityValues) - 1,
-                            max: Math.max(...humidityValues) + 1
-                        },
-                        tooltip: {
-                            enabled: true,
-                            followCursor: true,
-                            custom: function({ series, seriesIndex, dataPointIndex, w }) {
-                                const value = series[seriesIndex][dataPointIndex];
-                                return `<div style="background: #00bfff; color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 12px; text-align: center;">
-                                    ${value}%
-                                </div>`;
-                            },
-                            offsetY: -20
-                        },
-                        colors: ["#00bfff"]
-                    };
-
-                    // Initialize Humidity Chart
-                    const humidityChart = new ApexCharts(document.querySelector("#humidity-chart"), humidityOptions);
-                    humidityChart.render();
-
-                    // Toggle Buttons
-                    const toggleTempBtn = document.getElementById("toggleTemp");
-                    const toggleHumidityBtn = document.getElementById("toggleHumidity");
-                    const tempChartContainer = document.getElementById("temperature-chart");
-                    const humidityChartContainer = document.getElementById("humidity-chart");
-
-                    toggleTempBtn.addEventListener("click", () => {
-                        tempChartContainer.style.display = "block";
-                        humidityChartContainer.style.display = "none";
-                        toggleTempBtn.classList.add("active");
-                        toggleHumidityBtn.classList.remove("active");
-                    });
-
-                    toggleHumidityBtn.addEventListener("click", () => {
-                        tempChartContainer.style.display = "none";
-                        humidityChartContainer.style.display = "block";
-                        toggleTempBtn.classList.remove("active");
-                        toggleHumidityBtn.classList.add("active");
-                    });
-                })
-                .catch((error) => console.error("Error fetching humidity data:", error));
+            const chart = new ApexCharts(document.querySelector("#temperature-chart"), options);
+            chart.render();
         })
         .catch((error) => console.error("Error fetching temperature data:", error));
 });

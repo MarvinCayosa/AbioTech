@@ -12,7 +12,7 @@ DHT dht(DHTPIN, DHTTYPE);
 #define LED_1 13
 #define LED_2 12
 
-#define mqPin 35      // MQ135 connected to GPIO 35
+#define mqPin 34      // MQ135 connected to GPIO 35
 #define vSupply 3.3   // Power supply voltage to MQ135
 
 float R0 = 10.0; // Assume clean air resistance (this must be calibrated in clean air)
@@ -20,6 +20,12 @@ float Rs;        // Resistance in the presence of gas
 float ppmNH3;    // Ammonia concentration in PPM
 float ppmCH2O;   // Formaldehyde concentration in PPM
 float ppmCO2;    // CO2 concentration in PPM
+
+const int waterLevelPin = 35; // ADC pin connected to the water level sensor
+int waterLevelValue = 0; 
+const float maxWaterHeight = 70.0; // Maximum height the sensor can measure in cm
+float waterLevelCM;
+
 
 
 // =================== WiFi Credentials ===================
@@ -54,6 +60,7 @@ void setup() {
     pinMode(LED_1, OUTPUT);
     pinMode(LED_2, OUTPUT);
     pinMode(mqPin, INPUT);
+    pinMode(waterLevelPin, INPUT);
 
     // Initial LED state
     digitalWrite(ON_BOARD_LED, LOW);
@@ -78,6 +85,8 @@ void loop() {
         readDHTSensor();
 
         readMQSensor();
+
+        readWaterSensor();
 
         // Construct and send DHT/LED data to the server
         String dhtPostData = constructDHTPostData();
@@ -180,6 +189,23 @@ void readMQSensor() {
 
 }
 
+void readWaterSensor(){
+  waterLevelValue = analogRead(waterLevelPin);
+
+  // Map the sensor value to a height in centimeters (0 to maxWaterHeight)
+  waterLevelCM = map(waterLevelValue, 0, 1580, 0, maxWaterHeight);
+
+  // Print the sensor readings to the Serial Monitor
+  Serial.print("Water Level Sensor Value: ");
+  Serial.print(waterLevelValue);
+  Serial.print(" | Water Level Height: ");
+  Serial.print(waterLevelCM);
+  Serial.println(" cm");
+
+  // Add a short delay before the next reading
+  delay(1000);
+}
+
 void sendDataToServer(const String& url, const String& data) {
     HTTPClient http;
     http.begin(url);
@@ -200,15 +226,14 @@ String constructDHTPostData() {
     String data = "id=esp32_01";
     data += "&temperature=" + String(temperature);
     data += "&humidity=" + String(humidity);
-    data += "&co2_level=" + String(ppmCO2);
+    data += "&CO2=" + String(ppmCO2);
+    data += "&NH3=" + String(ppmNH3);  // Add ammonia data
+    data += "&CH2O=" + String(ppmCH2O); // Add formaldehyde data
+    data += "&water_level=" + String(waterLevelCM);
     data += "&status_read_sensor_dht11=" + dhtStatus;
     data += "&led_01=" + led1State;
     data += "&led_02=" + led2State;
 
-
-
     return data;
 }
-
-
 

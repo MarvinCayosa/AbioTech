@@ -94,16 +94,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="toggle-container">
-                    <button id="toggleTemp" class="btn btn-primary active">Temperature</button>
-                    <button id="toggleHumidity" class="btn btn-secondary">Humidity</button>
-                </div>
                 <div class="rectangle2-part2">
-       
-                    <div id="chart-container">
-                        <div id="temperature-chart" style="margin-top: 20px;"></div>
-                        <div id="humidity-chart" style="margin-top: 20px; display: none;"></div>
-                    </div>
+                    <div id="temperature-chart" style="margin-top: 20px;"></div>
                 </div>
 
             </div>
@@ -195,3 +187,5 @@
 
 </body>
 </html>
+
+

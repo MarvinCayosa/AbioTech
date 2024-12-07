@@ -241,7 +241,9 @@ body {
 
 /* Rectangle 1 */
 
-
+#temperature-chart{
+    width: 95%;
+}
 
 
 

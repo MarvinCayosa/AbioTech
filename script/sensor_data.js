@@ -1,6 +1,3 @@
-document.querySelector(".temperature-value h1").textContent = "00";
-document.querySelector(".humidity-value h5").textContent = "00";
-
 // Function to fetch data from ESP32
 function fetchSensorData() {
   if (window.XMLHttpRequest) {
@@ -8,21 +5,40 @@ function fetchSensorData() {
   } else {
     var xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
   }
+
   xmlhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       const myObj = JSON.parse(this.responseText);
+
       if (myObj.id === "esp32_01") {
-        // Update temperature and humidity values with one decimal place
+        // Update temperature and humidity
         document.querySelector(".temperature-value h1").textContent = parseFloat(myObj.temperature).toFixed(1);
         document.querySelector(".humidity-value h5").textContent = `${parseFloat(myObj.humidity).toFixed(1)}%`;
 
-        // Update the CO2 level gauge with the fetched co2_level value
-        if (myObj.co2_level !== undefined) {
-          g2.refresh(myObj.co2_level); // Assuming co2_level is a number and is in the range of 0 to 2500 ppm
+        // Update CO2 levels
+        if (myObj.CO2 !== undefined) {
+          g2.refresh(parseFloat(myObj.CO2).toFixed(2));
+      }
+
+        // Update ammonia (NH3) levels
+        if (myObj.NH3 !== undefined) {
+          g3.refresh(parseFloat(myObj.NH3));      // Pass a float
+
+        }
+
+        // Update formaldehyde (CH2O) levels
+        if (myObj.CH2O !== undefined) {
+          g4.refresh(parseFloat(myObj.CH2O));     // Pass a float
+        }
+
+        // Update water level
+        if (myObj.water_level !== undefined) {
+          updateWaterLevel(myObj.water_level); // Pass the water level in cm
         }
       }
     }
   };
+
   xmlhttp.open("POST", "../getdata.php", true);
   xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xmlhttp.send("id=esp32_01");
