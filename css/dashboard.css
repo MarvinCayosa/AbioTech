@@ -140,7 +140,7 @@ body {
     padding: 20px 0;
     display: grid;
     grid-template-areas:
-        "rectangle1 rectangle1 rectangle2"
+        "rectangle1 rectangle4 rectangle2"
         "rectangle3 rectangle4 rectangle2";
     grid-template-columns: 5fr 1.2fr 1.2fr;
     grid-template-rows: 1fr 1fr ; /* Uniform row heights */
@@ -184,7 +184,7 @@ body {
 .rectangle4 {
     grid-area: rectangle4;
     height: 100%; /* Matches other rows */
-    grid-row: span 1;
+    grid-row: span 2;
     animation: fadeinbt 0.5s ease-in-out 0s 1 normal forwards;
 }
 
@@ -242,6 +242,9 @@ body {
 /* Rectangle 1 */
 
 #temperature-chart{
+    width: 95%;
+}
+#humidity-chart{
     width: 95%;
 }
 
@@ -576,11 +579,7 @@ h7{
     z-index: 2;
 }
 
-#chart-container {
-    width: 100%;
-    height: 100%;
 
-}
 
 
 
@@ -638,3 +637,78 @@ h7{
 .color-box.red {
     background-color: #dc3545;
 }
+
+
+
+#prev-btn{
+    position: absolute;
+    left: 0;
+    color: #FEFADF;
+}
+#next-btn{
+    position: absolute;
+    right: 0;
+    color: #FEFADF;
+}
+
+#temperature-chart{
+    width: 95%;
+}
+#humidity-chart{
+    width: 95%;
+}
+
+.chart-container {
+    position: relative;
+    width: 95%;
+    height: 100%;
+}
+.chart {
+    display: none; /* Hide all charts initially */
+}
+.chart.active {
+    display: block; /* Show only the active chart */
+}
+.chart-navigation {
+    display: flex;
+    justify-content: space-between; /* Align buttons to far left and far right */
+    width: 100%; /* Ensure full-width container for alignment */
+
+}
+.btn {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    margin-top: 10px;
+}
+
+
+.btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.chart-navigation {
+    display: flex;
+    justify-content: space-between; /* Keeps buttons aligned to the far left and right */
+    width: 100%; /* Ensures full-width container */
+    position: relative;
+    align-items: center; /* Aligns the title vertically with the arrows */
+}
+
+.chart-navigation-title {
+    margin-top: 10px; /* Adjusts spacing between the title and the arrows */
+    position: absolute;
+    top: 50%; /* Centers the title vertically */
+    left: 50%;
+    transform: translate(-50%, -50%); /* Adjusts for perfect centering */
+    color: #fff; /* Set text color */
+    font-size: 14px; /* Set font size */
+    font-weight: 300; /* Optional: makes the title bold */
+    text-align: center;
+}
+
+

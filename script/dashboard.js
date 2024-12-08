@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         min: 0,
         max: 2500, // Max value for CO2, as per safety levels
         titleFontColor: "#FEFADF",
+        decimals: 2,
         donut: true,
         valueFontColor: "#FEFADF",
         titleFontFamily: "Roboto",
@@ -103,9 +104,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
             { color: '#fd7e14', lo: 1200, hi: 1800 }, // Orange for Poor (1200-1800 ppm)
             { color: '#dc3545', lo: 1800, hi: 2500 }, // Red for Dangerous (1800-2500 ppm)
         ],
-        formatNumber: function (value) {
-            return value.toFixed(2); // Display with two decimal places
-        }
     });
 
 });
@@ -122,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         max: 100, // Max value for ammonia, as per safety levels (Unsafe starts above 55 ppm)
         titleFontColor: "#FEFADF",
         donut: true,
+        decimals: 2,
         valueFontColor: "#FEFADF",
         titleFontFamily: "Roboto",
         gaugeWidthScale: 0.4,
@@ -143,9 +142,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
             { color: '#28a745', lo: 0, hi: 55 },  // Green for Safe to Tolerable (0-55 ppm)
             { color: '#dc3545', lo: 55, hi: 100 }, // Red for Unsafe (Above 55 ppm)
         ],
-        formatNumber: function (value) {
-            return value.toFixed(2); // Display with two decimal places
-        }
     });
 
 });
@@ -160,6 +156,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         value: 0.1, // Initial value for formaldehyde concentration
         min: 0,
         max: 2, // Max value for formaldehyde, since Dangerous starts above 1 ppm
+        decimals: 2,
         titleFontColor: "#FEFADF",
         donut: true,
         valueFontColor: "#FEFADF",
@@ -208,28 +205,45 @@ function getRandomInt(min, max) {
 
 
 // Function to update water level visually
+let lastValidWaterLevel = null;  // Variable to store the last valid water level
+
+// Function to update water level visually based on the fetched data
 function updateWaterLevel(waterLevelCm) {
     const waterLevelElement = document.querySelector(".water-level");
     const waterLabelElement = document.querySelector(".water-label");
-  
-    // Convert water level to percentage (0 to 100%)
-    const waterLevelPercentage = (waterLevelCm / 70) * 100; // Assuming 70 cm is the maximum level
-  
-    // Update the height of the water level bar
-    waterLevelElement.style.height = `${waterLevelPercentage}%`;
-  
-    // Update the label to show the water level in centimeters
-    waterLabelElement.textContent = `${Math.round(waterLevelCm)} cm`;
-  }
 
-  // Update water level every 2 seconds
-  setInterval(updateWaterLevel, 2000);
+    // If the water level value is valid, update it
+    if (waterLevelCm !== null && !isNaN(waterLevelCm)) {
+        // Store the latest valid value
+        lastValidWaterLevel = waterLevelCm;
 
-  // Initial update
-  updateWaterLevel();
+        // Convert water level to percentage (0 to 100%)
+        const waterLevelPercentage = (waterLevelCm / 70) * 100; // Assuming 70 cm is the maximum level
+
+        // Update the height of the water level bar
+        waterLevelElement.style.height = `${waterLevelPercentage}%`;
+
+        // Update the label to show the water level in centimeters
+        waterLabelElement.textContent = `${Math.round(waterLevelCm)} cm`;
+    } else {
+        // If no valid water level is received, display the last valid water level
+        if (lastValidWaterLevel !== null) {
+            waterLabelElement.textContent = `${Math.round(lastValidWaterLevel)} cm`;
+        }
+    }
+}
 
 
-  document.addEventListener("DOMContentLoaded", function () {
+// Update water level every 2 seconds
+setInterval(updateWaterLevel, 500);
+
+// Initial update
+updateWaterLevel();
+
+
+//tempChart
+// Function to render the chart
+const renderChart = () => {
     fetch("getTempData.php")
         .then((response) => response.json())
         .then((data) => {
@@ -248,33 +262,23 @@ function updateWaterLevel(waterLevelCm) {
 
             // Extract and format labels (time) and temperature data
             const labels = data
-                .filter((item, index) => index % 10 === 0)  // Show data every 10 minutes
+                .filter((item, index) => index % 10 === 0) // Show data every 10 minutes
                 .map((item) => adjustAndConvertTime(item.time));
             const temperatureData = data
-                .filter((item, index) => index % 10 === 0)  // Filter corresponding temperature data
+                .filter((item, index) => index % 10 === 0) // Filter corresponding temperature data
                 .map((item) => item.temperature);
 
-            // Configure and render the chart
+            // Configure the chart
             const options = {
                 chart: {
                     type: "line",
                     height: "100%",
-                    width: "100%", 
+                    width: "100%",
                     toolbar: { show: false }
                 },
                 stroke: {
                     width: 2.5,
                     curve: "smooth",
-                },
-                title: {
-                    text: "Temperature for the Past Hour",
-                    align: "center",
-                    style: {
-                        fontSize: "16px",
-                        fontFamily: "Roboto",
-                        fontWeight: 300,
-                        color: "#FEFADF"
-                    }
                 },
                 series: [
                     {
@@ -308,7 +312,10 @@ function updateWaterLevel(waterLevelCm) {
                     max: Math.max(...temperatureData) + 1
                 },
                 grid: {
-                    borderColor: "#bababa4c",
+                    show: true,
+                    borderColor: '#11111',
+                    strokeDashArray: 2,
+                    position: 'back',
                     xaxis: { lines: { show: false } },
                     yaxis: { lines: { show: true } },
                 },
@@ -326,8 +333,165 @@ function updateWaterLevel(waterLevelCm) {
                 colors: ["#e7ae1d"]
             };
 
-            const chart = new ApexCharts(document.querySelector("#temperature-chart"), options);
+            // Render or update the chart
+            const chartContainer = document.querySelector("#temperature-chart");
+            chartContainer.innerHTML = ""; // Clear the existing chart
+            const chart = new ApexCharts(chartContainer, options);
             chart.render();
         })
         .catch((error) => console.error("Error fetching temperature data:", error));
+};
+
+// Initial render
+document.addEventListener("DOMContentLoaded", renderChart);
+
+// Refresh the chart every minute
+setInterval(renderChart, 60000);
+
+
+// Function to render the humidity chart
+const renderHumidityChart = () => {
+    fetch("getHumData.php") // Update to the correct PHP file for humidity
+        .then((response) => response.json())
+        .then((data) => {
+            // Function to adjust time by adding 1 hour and converting to 12-hour format
+            const adjustAndConvertTime = (time) => {
+                let [hours, minutes] = time.split(":").map(Number);
+
+                // Add 1 hour
+                hours = (hours + 1) % 24; // Ensure hours stay within 24-hour range
+
+                // Convert to 12-hour format with AM/PM
+                const ampm = hours >= 12 ? "PM" : "AM";
+                const adjustedHours = hours % 12 || 12; // Convert 0 to 12 for midnight
+                return `${adjustedHours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
+            };
+
+            // Extract and format labels (time) and humidity data
+            const labels = data
+                .filter((item, index) => index % 10 === 0) // Show data every 10 minutes
+                .map((item) => adjustAndConvertTime(item.time));
+            const humidityData = data
+                .filter((item, index) => index % 10 === 0) // Filter corresponding humidity data
+                .map((item) => item.humidity);
+
+            // Configure the chart
+            const options = {
+                chart: {
+                    type: "line",
+                    height: "100%",
+                    width: "100%",
+                    toolbar: { show: false }
+                },
+                stroke: {
+                    width: 2.5,
+                    curve: "smooth",
+                },
+                series: [
+                    {
+                        name: "Humidity (%)",
+                        data: humidityData
+                    }
+                ],
+                xaxis: {
+                    categories: labels,
+                    labels: {
+                        style: {
+                            fontSize: "12px",
+                            fontFamily: "Roboto",
+                            fontWeight: 300,
+                            colors: "#FEFADF"
+                        },
+                        rotate: -60,
+                    },
+                    tickAmount: Math.min(labels.length, 6),
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            fontSize: "12px",
+                            fontFamily: "Roboto",
+                            fontWeight: 300,
+                            colors: "#FEFADF"
+                        }
+                    },
+                    min: Math.min(...humidityData) - 5,
+                    max: Math.max(...humidityData) + 5
+                },
+                grid: {
+                    show: true,
+                    borderColor: '#11111',
+                    strokeDashArray: 2,
+                    position: 'back',
+                    xaxis: { lines: { show: false } },
+                    yaxis: { lines: { show: true } },
+                },
+                tooltip: {
+                    enabled: true,
+                    followCursor: true,
+                    custom: function ({ series, seriesIndex, dataPointIndex }) {
+                        const value = series[seriesIndex][dataPointIndex];
+                        return `<div style="background: #1d8be7; color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 12px; text-align: center;">
+                                    ${value}% RH
+                                </div>`;
+                    },
+                    offsetY: -20
+                },
+                colors: ["#1d8be7"] // Blue color for humidity chart
+            };
+
+            // Render or update the chart
+            const chartContainer = document.querySelector("#humidity-chart");
+            chartContainer.innerHTML = ""; // Clear the existing chart
+            const chart = new ApexCharts(chartContainer, options);
+            chart.render();
+        })
+        .catch((error) => console.error("Error fetching humidity data:", error));
+};
+
+// Initial render
+document.addEventListener("DOMContentLoaded", renderHumidityChart);
+
+// Refresh the chart every 5 seconds
+setInterval(renderHumidityChart, 60000);
+
+
+//toggle chart
+document.addEventListener("DOMContentLoaded", function () {
+    const charts = document.querySelectorAll('.chart'); // Select all charts
+    let currentIndex = 0;
+
+    const prevButton = document.getElementById('prevChart');
+    const nextButton = document.getElementById('nextChart');
+    const chartTitle = document.querySelector('.chart-navigation-title'); // Title element
+
+    // Array of titles corresponding to each chart
+    const chartTitles = [
+        "Temperature For the Past Hour",
+        "Humidity For the Past Hour" // Add more titles here if you have more charts
+    ];
+
+    // Function to update chart visibility and title
+    function updateChartVisibility() {
+        charts.forEach((chart, index) => {
+            chart.style.display = index === currentIndex ? 'block' : 'none'; // Only display the active chart
+        });
+
+        // Update the chart title dynamically based on the current index
+        chartTitle.textContent = chartTitles[currentIndex];
+    }
+
+    // Add event listeners for buttons
+    prevButton.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + charts.length) % charts.length; // Wrap around to the last chart
+        updateChartVisibility();
+    });
+
+    nextButton.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % charts.length; // Wrap around to the first chart
+        updateChartVisibility();
+    });
+
+    // Initial visibility update
+    updateChartVisibility(); // Ensure the first chart and title are displayed on load
 });

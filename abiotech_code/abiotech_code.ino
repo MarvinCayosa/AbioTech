@@ -12,7 +12,7 @@ DHT dht(DHTPIN, DHTTYPE);
 #define LED_1 13
 #define LED_2 12
 
-#define mqPin 34      // MQ135 connected to GPIO 35
+#define mqPin 34      // MQ135 connected to GPIO 34
 #define vSupply 3.3   // Power supply voltage to MQ135
 
 float R0 = 10.0; // Assume clean air resistance (this must be calibrated in clean air)
@@ -22,11 +22,14 @@ float ppmCH2O;   // Formaldehyde concentration in PPM
 float ppmCO2;    // CO2 concentration in PPM
 
 const int waterLevelPin = 35; // ADC pin connected to the water level sensor
-int waterLevelValue = 0; 
+int waterLevelValue = 0;
 const float maxWaterHeight = 70.0; // Maximum height the sensor can measure in cm
 float waterLevelCM;
+float waterLevelPercent;
 
-
+// Define calibrated ADC range for the sensor
+#define ADC_MIN 0     // Measured ADC value at 0 cm
+#define ADC_MAX 1500  // Measured ADC value at 70 cm
 
 // =================== WiFi Credentials ===================
 const char* ssid = "marvin";
@@ -40,20 +43,19 @@ String dhtStatus = "";
 String postData = "";
 String payload = "";
 
-
 // ================== Function Prototypes ===================
 void connectToWiFi();
 void fetchLEDStates();
 void controlLEDs();
 void readDHTSensor();
+void readMQSensor();
+void readWaterSensor();
 void sendDataToServer(const String& url, const String& data);
 String constructDHTPostData();
-String constructGasPostData();
 
 // =================== Setup ===================
 void setup() {
     Serial.begin(115200);
-    
 
     // Initialize pins
     pinMode(ON_BOARD_LED, OUTPUT);
@@ -84,14 +86,15 @@ void loop() {
         // Read DHT sensor data
         readDHTSensor();
 
+        // Read gas sensor data
         readMQSensor();
 
+        // Read water level sensor data
         readWaterSensor();
 
         // Construct and send DHT/LED data to the server
         String dhtPostData = constructDHTPostData();
         sendDataToServer("http://192.168.43.213/AbioTech/updateDHT11data_and_recordtable.php", dhtPostData);
-
 
         delay(4000); // Adjust interval as needed
     } else {
@@ -169,42 +172,32 @@ void readDHTSensor() {
 }
 
 void readMQSensor() {
-  int sensorValue = analogRead(mqPin);  // Read sensor value
-  Rs = (1023.0 / sensorValue) - 1.0;    // Calculate Rs from the analog reading
+    int sensorValue = analogRead(mqPin);
+    Rs = (1023.0 / sensorValue) - 1.0;
 
-  // Calculate PPM of Ammonia (NH3)
-  ppmNH3 = 2.3 * pow(Rs / R0, -1.5);  // Constants for NH3
-  Serial.print("Ammonia (NH3) PPM: ");
-  Serial.println(ppmNH3);
+    ppmNH3 = 2.3 * pow(Rs / R0, -1.5);
+    ppmCH2O = 2.6 * pow(Rs / R0, -1.4);
+    ppmCO2 = 0.45 * pow(Rs / R0, -2.5);
 
-  // Calculate PPM of Formaldehyde (CH2O)
-  ppmCH2O = 2.6 * pow(Rs / R0, -1.4);  // Adjusted constants for CH2O
-  Serial.print("Formaldehyde (CH2O) PPM: ");
-  Serial.println(ppmCH2O);
-
-  // Calculate PPM of CO2 (Carbon Dioxide)
-  ppmCO2 = 0.45 * pow(Rs / R0, -2.5);  // Use constants for CO2 (example constants)
-  Serial.print("CO2 PPM: ");
-  Serial.println(ppmCO2);
-
+    Serial.printf("Ammonia (NH3) PPM: %.2f\n", ppmNH3);
+    Serial.printf("Formaldehyde (CH2O) PPM: %.2f\n", ppmCH2O);
+    Serial.printf("CO2 PPM: %.2f\n", ppmCO2);
 }
 
-void readWaterSensor(){
-  waterLevelValue = analogRead(waterLevelPin);
+void readWaterSensor() {
+    waterLevelValue = analogRead(waterLevelPin) ; // Add 500 to the raw ADC value
 
-  // Map the sensor value to a height in centimeters (0 to maxWaterHeight)
-  waterLevelCM = map(waterLevelValue, 0, 1580, 0, maxWaterHeight);
+    // Map ADC value to water level in cm using the calibrated range
+    waterLevelCM = ((float)(waterLevelValue - ADC_MIN) / (ADC_MAX - ADC_MIN)) * maxWaterHeight;
+    waterLevelCM = constrain(waterLevelCM, 0, maxWaterHeight); // Clamp between 0 and maxWaterHeight (70 cm)
 
-  // Print the sensor readings to the Serial Monitor
-  Serial.print("Water Level Sensor Value: ");
-  Serial.print(waterLevelValue);
-  Serial.print(" | Water Level Height: ");
-  Serial.print(waterLevelCM);
-  Serial.println(" cm");
+    // Calculate percentage
+    waterLevelPercent = (waterLevelCM / maxWaterHeight) * 100.0;
 
-  // Add a short delay before the next reading
-  delay(1000);
+    // Print the results for debugging
+    Serial.printf("Raw ADC Value (adjusted): %d | Water Level: %.2f cm (%.2f%%)\n", waterLevelValue, waterLevelCM, waterLevelPercent);
 }
+
 
 void sendDataToServer(const String& url, const String& data) {
     HTTPClient http;
@@ -227,13 +220,13 @@ String constructDHTPostData() {
     data += "&temperature=" + String(temperature);
     data += "&humidity=" + String(humidity);
     data += "&CO2=" + String(ppmCO2);
-    data += "&NH3=" + String(ppmNH3);  // Add ammonia data
-    data += "&CH2O=" + String(ppmCH2O); // Add formaldehyde data
+    data += "&NH3=" + String(ppmNH3);
+    data += "&CH2O=" + String(ppmCH2O);
     data += "&water_level=" + String(waterLevelCM);
+    data += "&water_level_percent=" + String(waterLevelPercent);
     data += "&status_read_sensor_dht11=" + dhtStatus;
     data += "&led_01=" + led1State;
     data += "&led_02=" + led2State;
 
     return data;
 }
-

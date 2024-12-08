@@ -1,4 +1,3 @@
-// Function to fetch data from ESP32
 function fetchSensorData() {
   if (window.XMLHttpRequest) {
     var xmlhttp = new XMLHttpRequest();
@@ -18,22 +17,21 @@ function fetchSensorData() {
         // Update CO2 levels
         if (myObj.CO2 !== undefined) {
           g2.refresh(parseFloat(myObj.CO2).toFixed(2));
-      }
+        }
 
         // Update ammonia (NH3) levels
         if (myObj.NH3 !== undefined) {
-          g3.refresh(parseFloat(myObj.NH3));      // Pass a float
-
+          g3.refresh(parseFloat(myObj.NH3));
         }
 
         // Update formaldehyde (CH2O) levels
         if (myObj.CH2O !== undefined) {
-          g4.refresh(parseFloat(myObj.CH2O));     // Pass a float
+          g4.refresh(parseFloat(myObj.CH2O));
         }
 
-        // Update water level
+        // Update water level (using actual value)
         if (myObj.water_level !== undefined) {
-          updateWaterLevel(myObj.water_level); // Pass the water level in cm
+          updateWaterLevel(parseFloat(myObj.water_level)); // Use actual water level from the sensor
         }
       }
     }
