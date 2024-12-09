@@ -118,7 +118,7 @@ void connectToWiFi() {
         timeout--;
     }
 
-    if (WiFi.status() == WL_CONNECTED) {  
+    if (WiFi.status() = = WL_CONNECTED) {  
         Serial.println("Connected!");
         Serial.print("IP Address: ");
         Serial.println(WiFi.localIP());

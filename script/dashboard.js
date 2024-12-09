@@ -495,3 +495,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initial visibility update
     updateChartVisibility(); // Ensure the first chart and title are displayed on load
 });
+
+
+
+

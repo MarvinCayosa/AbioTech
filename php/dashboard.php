@@ -62,21 +62,29 @@
                     <div class="humidity">
                         <h5>Humidity</h5>
                         <div class="humidity-value">
-                            
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M15.6 14.4C15.0643 16.0764 13.7176 17.4168 12 18M12.0001 21.6C8.03005 21.6 4.80005 18.5579 4.80005 14.8187C4.80005 9.6 12.0002 2.4 12.0002 2.4C12.0002 2.4 19.2 9.6 19.2 14.8187C19.2 18.558 15.9702 21.6 12.0001 21.6Z" stroke="#C8F9F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             <h5>70%</h5>
                         </div>
                     </div>
-
                 </div>
-            
+
                 <div class="rectangle1-part2">
+                    <a class="weatherwidget-io" href="https://forecast7.com/en/14d60120d98/manila/" 
+                    data-label_1="MANILA" 
+                    data-font="Roboto" 
+                    data-icons="Climacons Animated" 
+                    data-mode="Current" 
+                    data-days="3" 
+                    data-theme="original" 
+                    data-basecolor="#131d18" 
+                    textcolor="#FEFADF" 
+                    data-cloudfill="rgba(31, 86, 124, 0)">MANILA</a>
                 </div>
-
             </div>
         </div>
+
 
         <div class="rectangle rectangle2">
             <div class="rectangle2-container">
@@ -203,7 +211,17 @@
     <div class="background-box top-blur"><div class="ellipse"></div></div>
     <div class="background-box bottom-blur"><div class="ellipse"></div></div>
 
-
+    <script>
+        !function(d,s,id){
+            var js, fjs=d.getElementsByTagName(s)[0];
+            if(!d.getElementById(id)){
+                js = d.createElement(s);
+                js.id = id;
+                js.src = 'https://weatherwidget.io/js/widget.min.js';
+                fjs.parentNode.insertBefore(js, fjs);
+            }
+        }(document,'script','weatherwidget-io-js');
+    </script>
 
 </body>
 </html>
