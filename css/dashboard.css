@@ -147,7 +147,7 @@ body {
     grid-template-areas:
         "rectangle1 rectangle4 rectangle2"
         "rectangle3 rectangle4 rectangle2";
-    grid-template-columns: 5fr 1.2fr 1.2fr;
+    grid-template-columns: 5fr 1fr 1.2fr;
     grid-template-rows: 1fr 1fr ; /* Uniform row heights */
     grid-gap: 20px;
     width: 90%;
@@ -233,7 +233,7 @@ body {
 }
 
 .rectangle1-part2 {
-    flex: 1 1 60%;
+    width: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -265,7 +265,9 @@ body {
 #humidity-chart{
     width: 95%;
 }
-
+#air-quality-chart{
+    width: 95%;
+}
 
 
 .temperature-header h5{

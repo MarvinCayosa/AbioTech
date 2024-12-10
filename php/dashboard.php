@@ -121,6 +121,7 @@
                 <div id="chartContainer" class="chart-container">
                     <div id="temperature-chart" class="chart" style="margin-top: 20px;"></div>
                     <div id="humidity-chart" class="chart" style="margin-top: 20px;"></div>
+                    <div id="air-quality-chart" class="chart" style="margin-top: 20px;"></div>
                     <!-- Add other charts here -->
                 </div>
 

@@ -2,7 +2,7 @@
 #include <HTTPClient.h>
 #include <Arduino_JSON.h>
 #include "DHT.h"
-
+#include <MQ135.h>
 // =================== Pin Definitions ===================
 #define DHTPIN 15
 #define DHTTYPE DHT22
@@ -12,7 +12,9 @@ DHT dht(DHTPIN, DHTTYPE);
 #define LED_1 13
 #define LED_2 12
 
-#define mqPin 34      // MQ135 connected to GPIO 34
+#define PIN_MQ135 34
+
+MQ135 mq135_sensor(PIN_MQ135);      // MQ135 connected to GPIO 34
 #define vSupply 3.3   // Power supply voltage to MQ135
 
 float R0 = 10.0; // Assume clean air resistance (this must be calibrated in clean air)
@@ -61,7 +63,7 @@ void setup() {
     pinMode(ON_BOARD_LED, OUTPUT);
     pinMode(LED_1, OUTPUT);
     pinMode(LED_2, OUTPUT);
-    pinMode(mqPin, INPUT);
+    pinMode(PIN_MQ135, INPUT);
     pinMode(waterLevelPin, INPUT);
 
     // Initial LED state
@@ -98,7 +100,7 @@ void loop() {
 
         delay(4000); // Adjust interval as needed
     } else {
-        Serial.println("WiFi disconnected! Attempting to reconnect...");
+        Ser ial.println("WiFi disconnected! Attempting to reconnect...");
         connectToWiFi();
     }
 }
@@ -118,7 +120,7 @@ void connectToWiFi() {
         timeout--;
     }
 
-    if (WiFi.status() = = WL_CONNECTED) {  
+    if (WiFi.status() == WL_CONNECTED) {  
         Serial.println("Connected!");
         Serial.print("IP Address: ");
         Serial.println(WiFi.localIP());
@@ -172,12 +174,36 @@ void readDHTSensor() {
 }
 
 void readMQSensor() {
-    int sensorValue = analogRead(mqPin);
+
+    float rzero = mq135_sensor.getRZero();
+    float correctedRZero = mq135_sensor.getCorrectedRZero(temperature, humidity);
+    float resistance = mq135_sensor.getResistance();
+    float ppm = mq135_sensor.getPPM();
+    float correctedPPM = mq135_sensor.getCorrectedPPM(temperature, humidity);
+
+    Serial.print("MQ135 RZero: ");
+    Serial.print(rzero);
+    Serial.print("\t Corrected RZero: ");
+    Serial.print(correctedRZero);
+    Serial.print("\t Resistance: ");
+    Serial.print(resistance);
+    Serial.print("\t PPM: ");
+    Serial.print(ppm);
+    Serial.print("\t Corrected PPM: ");
+    Serial.print(correctedPPM);
+    Serial.println("ppm");
+
+    delay(300);
+
+
+
+  
+    int sensorValue = analogRead(PIN_MQ135);
     Rs = (1023.0 / sensorValue) - 1.0;
 
     ppmNH3 = 2.3 * pow(Rs / R0, -1.5);
     ppmCH2O = 2.6 * pow(Rs / R0, -1.4);
-    ppmCO2 = 0.45 * pow(Rs / R0, -2.5);
+    ppmCO2 = correctedPPM;
 
     Serial.printf("Ammonia (NH3) PPM: %.2f\n", ppmNH3);
     Serial.printf("Formaldehyde (CH2O) PPM: %.2f\n", ppmCH2O);

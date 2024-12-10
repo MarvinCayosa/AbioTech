@@ -456,6 +456,137 @@ document.addEventListener("DOMContentLoaded", renderHumidityChart);
 setInterval(renderHumidityChart, 60000);
 
 
+
+
+// Function to render the air quality chart
+const renderAirQualityChart = () => {
+    fetch("getAirQuality.php") // Update to the correct PHP file for air quality data
+        .then((response) => response.json())
+        .then((data) => {
+            // Function to adjust time by adding 1 hour and converting to 12-hour format
+            const adjustAndConvertTime = (time) => {
+                let [hours, minutes] = time.split(":").map(Number);
+
+                // Add 1 hour
+                hours = (hours + 1) % 24; // Ensure hours stay within 24-hour range
+
+                // Convert to 12-hour format with AM/PM
+                const ampm = hours >= 12 ? "PM" : "AM";
+                const adjustedHours = hours % 12 || 12; // Convert 0 to 12 for midnight
+                return `${adjustedHours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
+            };
+
+            // Extract and format labels (time) and data for CO2, NH3, and CH2O
+            const labels = data
+                .filter((item, index) => index % 10 === 0) // Show data every 10 minutes
+                .map((item) => adjustAndConvertTime(item.time));
+            const co2Data = data
+                .filter((item, index) => index % 10 === 0)
+                .map((item) => item.CO2);
+            const nh3Data = data
+                .filter((item, index) => index % 10 === 0)
+                .map((item) => item.NH3);
+            const ch2oData = data
+                .filter((item, index) => index % 10 === 0)
+                .map((item) => item.CH2O);
+
+            // Configure the chart
+            const options = {
+                chart: {
+                    type: "line",
+                    height: "100%",
+                    width: "100%",
+                    toolbar: { show: false }
+                },
+                stroke: {
+                    width: 2.5,
+                    curve: "smooth",
+                },
+                series: [
+                    {
+                        name: "CO2 (ppm)",
+                        data: co2Data,
+                    },
+                    {
+                        name: "NH3 (ppm)",
+                        data: nh3Data,
+                    },
+                    {
+                        name: "CH2O (ppm)",
+                        data: ch2oData,
+                    },
+                ],
+                xaxis: {
+                    categories: labels,
+                    labels: {
+                        style: {
+                            fontSize: "12px",
+                            fontFamily: "Roboto",
+                            fontWeight: 300,
+                            colors: "#FEFADF"
+                        },
+                        rotate: -60,
+                    },
+                    tickAmount: Math.min(labels.length, 6),
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            fontSize: "12px",
+                            fontFamily: "Roboto",
+                            fontWeight: 300,
+                            colors: "#FEFADF"
+                        }
+                    },
+                    min: Math.min(...[...co2Data, ...nh3Data, ...ch2oData]) - 5,
+                    max: Math.max(...[...co2Data, ...nh3Data, ...ch2oData]) + 5,
+                },
+                grid: {
+                    show: true,
+                    borderColor: '#11111',
+                    strokeDashArray: 2,
+                    position: 'back',
+                    xaxis: { lines: { show: false } },
+                    yaxis: { lines: { show: true } },
+                },
+                tooltip: {
+                    enabled: true,
+                    followCursor: true,
+                    shared: true, // Show tooltip for all series
+                    intersect: false,
+                    theme: "dark",
+                },
+                colors: ["#FF4560", "#00E396", "#008FFB"], // Colors for CO2, NH3, CH2O
+                legend: {
+                    show: true,
+                    position: "top",
+                    labels: {
+                        colors: "#FEFADF",
+                    },
+                },
+            };
+
+            // Render or update the chart
+            const chartContainer = document.querySelector("#air-quality-chart");
+            chartContainer.innerHTML = ""; // Clear the existing chart
+            const chart = new ApexCharts(chartContainer, options);
+            chart.render();
+        })
+        .catch((error) => console.error("Error fetching air quality data:", error));
+};
+
+// Initial render
+document.addEventListener("DOMContentLoaded", renderAirQualityChart);
+
+// Refresh the chart every 5 minutes
+setInterval(renderAirQualityChart, 60000);
+
+
+
+
+
+
+
 //toggle chart
 document.addEventListener("DOMContentLoaded", function () {
     const charts = document.querySelectorAll('.chart'); // Select all charts
@@ -468,7 +599,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Array of titles corresponding to each chart
     const chartTitles = [
         "Temperature For the Past Hour",
-        "Humidity For the Past Hour" // Add more titles here if you have more charts
+        "Humidity For the Past Hour",
+        "Air Quality For the Past Hour" // Add more titles here if you have more charts
     ];
 
     // Function to update chart visibility and title
